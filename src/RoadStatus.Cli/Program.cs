@@ -13,7 +13,8 @@ internal static class Program
         var parser = new CliArgumentParser();
         var httpClient = new HttpClient();
         var client = new TflRoadStatusClient(httpClient);
-        var app = new CliApplication(parser, client);
+        var formatter = new RoadStatusFormatter();
+        var app = new CliApplication(parser, client, formatter);
 
         return await app.RunAsync(args, Console.Out);
     }

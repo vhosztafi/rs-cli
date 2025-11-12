@@ -13,7 +13,8 @@ public class CliApplicationTests
     {
         var parser = new CliArgumentParser();
         var mockClient = new MockTflRoadStatusClient();
-        var app = new CliApplication(parser, mockClient);
+        var formatter = new RoadStatusFormatter();
+        var app = new CliApplication(parser, mockClient, formatter);
         var output = new StringWriter();
 
         var exitCode = await app.RunAsync(Array.Empty<string>(), output);
@@ -27,13 +28,16 @@ public class CliApplicationTests
     {
         var parser = new CliArgumentParser();
         var mockClient = new MockTflRoadStatusClient();
-        var app = new CliApplication(parser, mockClient);
+        var formatter = new RoadStatusFormatter();
+        var app = new CliApplication(parser, mockClient, formatter);
         var output = new StringWriter();
 
         var exitCode = await app.RunAsync(new[] { "A2" }, output);
 
         Assert.Equal(0, exitCode);
-        Assert.Contains("Road Status:", output.ToString());
+        var outputText = output.ToString();
+        Assert.Contains("The status of the A2 is Good", outputText);
+        Assert.Contains("No Exceptional Delays", outputText);
     }
 
     [Fact]
@@ -41,7 +45,8 @@ public class CliApplicationTests
     {
         var parser = new CliArgumentParser();
         var mockClient = new MockTflRoadStatusClient(shouldThrowNotFound: true);
-        var app = new CliApplication(parser, mockClient);
+        var formatter = new RoadStatusFormatter();
+        var app = new CliApplication(parser, mockClient, formatter);
         var output = new StringWriter();
 
         var exitCode = await app.RunAsync(new[] { "A233" }, output);
