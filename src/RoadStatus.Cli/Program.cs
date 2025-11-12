@@ -12,7 +12,9 @@ internal static class Program
     {
         var parser = new CliArgumentParser();
         var httpClient = new HttpClient();
-        var client = new TflRoadStatusClient(httpClient);
+        var appId = Environment.GetEnvironmentVariable("TFL_APP_ID");
+        var appKey = Environment.GetEnvironmentVariable("TFL_APP_KEY");
+        var client = new TflRoadStatusClient(httpClient, appId: appId, appKey: appKey);
         var formatter = new RoadStatusFormatter();
         var app = new CliApplication(parser, client, formatter);
 

@@ -14,6 +14,15 @@ dotnet build
 
 ## Run
 
+Set the TfL API credentials as environment variables:
+
+```bash
+export TFL_APP_ID=your_app_id
+export TFL_APP_KEY=your_app_key
+```
+
+Then run:
+
 ```bash
 dotnet run --project src/RoadStatus.Cli -- <road-id>
 ```
