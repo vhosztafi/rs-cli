@@ -1,0 +1,8 @@
+node_modules
+.idea/
+Notes/
+obj
+bin
+publish/
+.vs/
+*.user
