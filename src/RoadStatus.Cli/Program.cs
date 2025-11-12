@@ -1,13 +1,20 @@
-﻿namespace RoadStatus.Cli;
+﻿using RoadStatus.Core;
+
+namespace RoadStatus.Cli;
 
 internal static class Program
 {
-    private const int ExitCodeSuccess = 0;
-    private const int ExitCodeInvalidRoad = 1;
-    private const int ExitCodeInvalidUsage = 2;
+    internal const int ExitCodeSuccess = 0;
+    internal const int ExitCodeInvalidRoad = 1;
+    internal const int ExitCodeInvalidUsage = 2;
 
-    private static int Main(string[] args)
+    private static async Task<int> Main(string[] args)
     {
-        return ExitCodeSuccess;
+        var parser = new CliArgumentParser();
+        var httpClient = new HttpClient();
+        var client = new TflRoadStatusClient(httpClient);
+        var app = new CliApplication(parser, client);
+
+        return await app.RunAsync(args, Console.Out);
     }
 }

@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\RoadStatus.Cli\RoadStatus.Cli.csproj" />
+    <ProjectReference Include="..\..\src\RoadStatus.Core\RoadStatus.Core.csproj" />
   </ItemGroup>
 
 </Project>

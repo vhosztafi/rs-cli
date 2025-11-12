@@ -7,4 +7,8 @@
     <AssemblyName>RoadStatus</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RoadStatus.Core\RoadStatus.Core.csproj" />
+  </ItemGroup>
+
 </Project>
