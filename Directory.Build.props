@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors />
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
+    <VSTestUseDotNetRunner>true</VSTestUseDotNetRunner>
+  </PropertyGroup>
+</Project>
+
