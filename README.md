@@ -27,6 +27,42 @@ Then run:
 dotnet run --project src/RoadStatus.Cli -- <road-id>
 ```
 
+## Examples
+
+### Success case (A2)
+
+```bash
+dotnet run --project src/RoadStatus.Cli -- A2
+```
+
+Output:
+```
+The status of the A2 is Good
+No Exceptional Delays
+```
+
+Exit code: `0`
+
+### Error case (A233)
+
+```bash
+dotnet run --project src/RoadStatus.Cli -- A233
+```
+
+Output:
+```
+A233 is not a valid road
+```
+
+Exit code: `1`
+
+### Check exit code (PowerShell)
+
+```powershell
+dotnet run --project src/RoadStatus.Cli -- A2
+$lastexitcode
+```
+
 ## Tests
 
 ```bash
