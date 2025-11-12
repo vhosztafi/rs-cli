@@ -69,3 +69,5 @@ $lastexitcode
 dotnet test
 ```
 
+Integration tests are opt-in. Set `RUN_LIVE_INTEGRATION=1` along with `TFL_APP_ID` and `TFL_APP_KEY` to run live API tests.
+
