@@ -9,7 +9,7 @@ namespace RoadStatus.Cli.Tests;
 public class CliApplicationTests
 {
     [Fact]
-    public async Task RunAsync_InvalidUsage_ReturnsExitCodeInvalidUsage()
+    public async Task RunAsync_NoArguments_ReturnsExitCodeInvalidUsage()
     {
         var parser = new CliArgumentParser();
         var mockClient = new MockTflRoadStatusClient();
@@ -21,6 +21,21 @@ public class CliApplicationTests
 
         Assert.Equal(2, exitCode);
         Assert.Contains("No arguments provided", output.ToString());
+    }
+
+    [Fact]
+    public async Task RunAsync_TooManyArguments_ReturnsExitCodeInvalidUsage()
+    {
+        var parser = new CliArgumentParser();
+        var mockClient = new MockTflRoadStatusClient();
+        var formatter = new RoadStatusFormatter();
+        var app = new CliApplication(parser, mockClient, formatter);
+        var output = new StringWriter();
+
+        var exitCode = await app.RunAsync(new[] { "A2", "A233" }, output);
+
+        Assert.Equal(2, exitCode);
+        Assert.Contains("Too many arguments provided", output.ToString());
     }
 
     [Fact]
