@@ -71,6 +71,39 @@ public class CliApplicationTests
         Assert.Contains("A233 is not a valid road", output.ToString());
     }
 
+    [Fact]
+    public async Task RunAsync_HelpFlag_ShowsHelpAndReturnsSuccess()
+    {
+        var parser = new CliArgumentParser();
+        var mockClient = new MockTflRoadStatusClient();
+        var formatter = new RoadStatusFormatter();
+        var app = new CliApplication(parser, mockClient, formatter);
+        var output = new StringWriter();
+
+        var exitCode = await app.RunAsync(new[] { "--help" }, output);
+
+        Assert.Equal(0, exitCode);
+        var outputText = output.ToString();
+        Assert.Contains("Usage:", outputText);
+        Assert.Contains("RoadStatus <road-id>", outputText);
+    }
+
+    [Fact]
+    public async Task RunAsync_VersionFlag_ShowsVersionAndReturnsSuccess()
+    {
+        var parser = new CliArgumentParser();
+        var mockClient = new MockTflRoadStatusClient();
+        var formatter = new RoadStatusFormatter();
+        var app = new CliApplication(parser, mockClient, formatter);
+        var output = new StringWriter();
+
+        var exitCode = await app.RunAsync(new[] { "--version" }, output);
+
+        Assert.Equal(0, exitCode);
+        var outputText = output.ToString();
+        Assert.Contains("RoadStatus CLI", outputText);
+    }
+
     private sealed class MockTflRoadStatusClient : ITflRoadStatusClient
     {
         private readonly bool _shouldThrowNotFound;
