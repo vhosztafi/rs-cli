@@ -1,0 +1,86 @@
+# Azure DevOps Pipeline
+# Minimal CI pipeline for build, test, and coverage
+
+trigger:
+  branches:
+    include:
+      - master
+      - dev
+  paths:
+    exclude:
+      - README.md
+      - '**/*.md'
+      - .gitignore
+
+pr:
+  branches:
+    include:
+      - master
+      - dev
+
+jobs:
+- job: BuildAndTest
+  displayName: 'Build and Test'
+  pool:
+    vmImage: 'ubuntu-latest'
+    demands: []
+  variables:
+    buildConfiguration: 'Release'
+    dotnetVersion: '8.0.x'
+  steps:
+  - task: UseDotNet@2
+    displayName: 'Use .NET $(dotnetVersion)'
+    inputs:
+      packageType: 'sdk'
+      version: '$(dotnetVersion)'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Restore dependencies'
+    inputs:
+      command: 'restore'
+      projects: '**/*.csproj'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Build'
+    inputs:
+      command: 'build'
+      projects: '**/*.csproj'
+      arguments: '--no-restore --configuration $(buildConfiguration)'
+
+  - script: |
+      dotnet test \
+        --no-build \
+        --configuration $(buildConfiguration) \
+        --collect:"XPlat Code Coverage" \
+        --results-directory:"$(Agent.TempDirectory)/TestResults" \
+        --logger:"trx;LogFileName=test-results.trx" \
+        rs-cli.sln
+    displayName: 'Test with coverage'
+    continueOnError: false
+
+  - task: PublishCodeCoverageResults@2
+    displayName: 'Publish code coverage'
+    condition: always()
+    inputs:
+      summaryFileLocation: '$(Agent.TempDirectory)/TestResults/**/coverage.cobertura.xml'
+      reportDirectory: '$(Agent.TempDirectory)/TestResults'
+      codeCoverageTool: 'Cobertura'
+      failIfCoverageEmpty: false
+
+  - task: PublishTestResults@2
+    displayName: 'Publish test results'
+    condition: always()
+    inputs:
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '$(Agent.TempDirectory)/TestResults/**/*.trx'
+      mergeTestResults: true
+      testRunTitle: 'Test Results'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish coverage artifacts'
+    condition: always()
+    inputs:
+      pathToPublish: '$(Agent.TempDirectory)/TestResults'
+      artifactName: 'coverage-reports'
+      publishLocation: 'Container'
+

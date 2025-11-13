@@ -103,17 +103,30 @@ Integration tests are opt-in. Set `RUN_LIVE_INTEGRATION=1` along with `TFL_APP_I
 
 ## Continuous Integration
 
-The project includes a GitHub Actions CI pipeline (`.github/workflows/ci.yml`) that:
+The project includes CI pipelines for both GitHub Actions and Azure DevOps:
 
-- Builds the solution on push and pull requests
+### GitHub Actions
+
+The GitHub Actions pipeline (`.github/workflows/ci.yml`) runs on push and pull requests and:
+- Builds the solution
 - Runs all tests with code coverage collection
-- Uploads coverage reports and test results as artifacts
+- Uploads coverage reports to Codecov (if configured)
+- Uploads coverage and test result artifacts
 
-The pipeline runs on:
-- Ubuntu latest
-- .NET 8.0
+The pipeline runs on Ubuntu latest with .NET 8.0.
 
-Coverage and test result artifacts are retained for 30 days and can be downloaded from the GitHub Actions run page.
+### Azure DevOps
+
+The Azure DevOps pipeline (`azure-pipelines.yml`) provides equivalent functionality:
+- Builds the solution
+- Runs all tests with code coverage collection
+- Publishes code coverage results
+- Publishes test results
+- Uploads coverage artifacts
+
+The pipeline runs on Ubuntu latest with .NET 8.0.
+
+Both pipelines can be used depending on your CI/CD platform preference.
 
 ## Configuration
 
