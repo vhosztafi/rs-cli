@@ -1,4 +1,3 @@
-using RoadStatus.Core;
 using Xunit;
 
 namespace RoadStatus.Core.Tests;

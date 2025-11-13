@@ -40,7 +40,7 @@ public class RoadStatusSteps
         var outputBuilder = new StringBuilder();
         var errorBuilder = new StringBuilder();
 
-        process.OutputDataReceived += (sender, e) =>
+        process.OutputDataReceived += (_, e) =>
         {
             if (e.Data != null)
             {
@@ -48,7 +48,7 @@ public class RoadStatusSteps
             }
         };
 
-        process.ErrorDataReceived += (sender, e) =>
+        process.ErrorDataReceived += (_, e) =>
         {
             if (e.Data != null)
             {
