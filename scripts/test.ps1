@@ -14,7 +14,8 @@ try {
     dotnet test `
         --collect:"XPlat Code Coverage" `
         --results-directory:"TestResults" `
-        --logger:"console;verbosity=normal"
+        --logger:"console;verbosity=normal" `
+        -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
 
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Tests failed!" -ForegroundColor Red
@@ -22,7 +23,8 @@ try {
     }
 
     Write-Host "`nTests completed successfully!" -ForegroundColor Green
-    Write-Host "Coverage data saved to TestResults directory" -ForegroundColor Green
+    Write-Host "Coverage data (Cobertura XML format) saved to TestResults directory" -ForegroundColor Green
+    Write-Host "To generate HTML reports, run: .\scripts\generate-coverage-report.ps1" -ForegroundColor Yellow
 }
 finally {
     Pop-Location

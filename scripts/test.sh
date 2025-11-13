@@ -13,7 +13,8 @@ echo "Running tests with code coverage..."
 dotnet test \
     --collect:"XPlat Code Coverage" \
     --results-directory:"TestResults" \
-    --logger:"console;verbosity=normal"
+    --logger:"console;verbosity=normal" \
+    -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
 
 if [ $? -ne 0 ]; then
     echo "Tests failed!"
@@ -22,4 +23,5 @@ fi
 
 echo ""
 echo "Tests completed successfully!"
-echo "Coverage data saved to TestResults directory"
+echo "Coverage data (Cobertura XML format) saved to TestResults directory"
+echo "To generate HTML reports, run: ./scripts/generate-coverage-report.sh"
