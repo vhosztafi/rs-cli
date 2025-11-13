@@ -51,8 +51,9 @@ public class CliApplicationTests
 
         Assert.Equal(0, exitCode);
         var outputText = output.ToString();
-        Assert.Contains("The status of the A2 is Good", outputText);
-        Assert.Contains("No Exceptional Delays", outputText);
+        Assert.Contains("The status of the A2 is as follows", outputText);
+        Assert.Contains("Road Status is Good", outputText);
+        Assert.Contains("Road Status Description is No Exceptional Delays", outputText);
     }
 
     [Fact]

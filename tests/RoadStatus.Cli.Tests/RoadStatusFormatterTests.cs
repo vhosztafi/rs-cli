@@ -18,7 +18,7 @@ public class RoadStatusFormatterTests
 
         var result = formatter.Format(roadStatus);
 
-        var expected = "The status of the A2 is Good\r\nNo Exceptional Delays\r\n";
+        var expected = "The status of the A2 is as follows\r\n        Road Status is Good\r\n        Road Status Description is No Exceptional Delays\r\n";
         Assert.Equal(expected, result);
     }
 
@@ -33,7 +33,7 @@ public class RoadStatusFormatterTests
 
         var result = formatter.Format(roadStatus);
 
-        var expected = "The status of the A205 is Closure\r\nRoad closed due to incident\r\n";
+        var expected = "The status of the A205 is as follows\r\n        Road Status is Closure\r\n        Road Status Description is Road closed due to incident\r\n";
         Assert.Equal(expected, result);
     }
 }
