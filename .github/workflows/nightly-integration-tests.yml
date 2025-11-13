@@ -1,4 +1,7 @@
 name: Nightly Integration Tests
+permissions:
+  contents: read
+  issues: write
 
 on:
   schedule:
