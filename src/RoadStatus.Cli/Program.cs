@@ -76,21 +76,21 @@ internal static class Program
 
         var tflApiOptions = new TflApiOptions();
         configuration.GetSection(TflApiOptions.SectionName).Bind(tflApiOptions);
-        
+
         var envAppId = Environment.GetEnvironmentVariable("TFL_APP_ID");
         var envAppKey = Environment.GetEnvironmentVariable("TFL_APP_KEY");
         var envBaseUrl = Environment.GetEnvironmentVariable("TFL_BASE_URL");
-        
+
         if (!string.IsNullOrWhiteSpace(envAppId))
         {
             tflApiOptions.AppId = envAppId;
         }
-        
+
         if (!string.IsNullOrWhiteSpace(envAppKey))
         {
             tflApiOptions.AppKey = envAppKey;
         }
-        
+
         if (!string.IsNullOrWhiteSpace(envBaseUrl))
         {
             tflApiOptions.BaseUrl = envBaseUrl;
@@ -105,7 +105,7 @@ internal static class Program
 
             var verbose = LoggingConfiguration.IsVerboseEnabled(cliVerbose);
             var quiet = LoggingConfiguration.IsQuietEnabled(cliQuiet);
-            
+
             if (verbose)
             {
                 quiet = false;
@@ -115,7 +115,7 @@ internal static class Program
 
             var httpClientFactory = new HttpClientFactory();
             var httpClient = httpClientFactory.Create();
-            
+
             var clientLogger = loggerFactory.CreateLogger<TflRoadStatusClient>();
             var client = new TflRoadStatusClient(
                 httpClient,
@@ -123,7 +123,7 @@ internal static class Program
                 appId: tflApiOptions.AppId,
                 appKey: tflApiOptions.AppKey,
                 logger: clientLogger);
-            
+
             var formatter = new RoadStatusFormatter();
             var appLogger = loggerFactory.CreateLogger<CliApplication>();
             var app = new CliApplication(client, formatter, appLogger);

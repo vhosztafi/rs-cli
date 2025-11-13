@@ -34,7 +34,7 @@ internal class ColoredTextWriter : TextWriter
     public ColoredTextWriter(TextWriter innerWriter, bool enableColors = true)
     {
         _innerWriter = innerWriter;
-        _enableColors = enableColors && !Console.IsOutputRedirected && 
+        _enableColors = enableColors && !Console.IsOutputRedirected &&
                        string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("NO_COLOR"));
     }
 
@@ -117,19 +117,19 @@ internal class ColoredTextWriter : TextWriter
 
         var coloredLine = new StringBuilder();
         coloredLine.Append(leadingSpaces);
-        
+
         var remaining = trimmed;
         var lastIndex = 0;
         var foundOption = false;
-        
+
         while (lastIndex < remaining.Length)
         {
             var bestMatch = (option: "", index: -1, length: 0);
-            
+
             foreach (var option in KnownOptions)
             {
                 var index = remaining.IndexOf(option, lastIndex, StringComparison.Ordinal);
-                if (index >= 0 && (index == 0 || !char.IsLetterOrDigit(remaining[index - 1])) && 
+                if (index >= 0 && (index == 0 || !char.IsLetterOrDigit(remaining[index - 1])) &&
                     (index + option.Length >= remaining.Length || !char.IsLetterOrDigit(remaining[index + option.Length])))
                 {
                     if (bestMatch.index < 0 || index < bestMatch.index)
@@ -138,7 +138,7 @@ internal class ColoredTextWriter : TextWriter
                     }
                 }
             }
-            
+
             if (bestMatch.index >= 0)
             {
                 foundOption = true;
@@ -152,12 +152,12 @@ internal class ColoredTextWriter : TextWriter
                 break;
             }
         }
-        
+
         if (foundOption)
         {
             return coloredLine.ToString();
         }
-        
+
         if (line.Contains('<') && line.Contains('>'))
         {
             var result = new StringBuilder();

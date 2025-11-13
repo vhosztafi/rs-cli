@@ -10,11 +10,11 @@ public class LoggingConfigurationTests
     public void ConfigureLogging_WithVerbose_SetsDebugLevel()
     {
         var loggerFactory = LoggingConfiguration.ConfigureLogging(verbose: true, quiet: false);
-        
+
         Assert.NotNull(loggerFactory);
         var logger = loggerFactory.CreateLogger("Test");
         Assert.True(logger.IsEnabled(LogLevel.Debug));
-        
+
         Log.CloseAndFlush();
     }
 
@@ -22,12 +22,12 @@ public class LoggingConfigurationTests
     public void ConfigureLogging_WithQuiet_SetsErrorLevel()
     {
         var loggerFactory = LoggingConfiguration.ConfigureLogging(verbose: false, quiet: true);
-        
+
         Assert.NotNull(loggerFactory);
         var logger = loggerFactory.CreateLogger("Test");
         Assert.False(logger.IsEnabled(LogLevel.Information));
         Assert.True(logger.IsEnabled(LogLevel.Error));
-        
+
         Log.CloseAndFlush();
     }
 
@@ -35,12 +35,12 @@ public class LoggingConfigurationTests
     public void ConfigureLogging_WithoutVerboseOrQuiet_SetsErrorLevel()
     {
         var loggerFactory = LoggingConfiguration.ConfigureLogging(verbose: false, quiet: false);
-        
+
         Assert.NotNull(loggerFactory);
         var logger = loggerFactory.CreateLogger("Test");
         Assert.False(logger.IsEnabled(LogLevel.Information));
         Assert.True(logger.IsEnabled(LogLevel.Error));
-        
+
         Log.CloseAndFlush();
     }
 
@@ -48,9 +48,9 @@ public class LoggingConfigurationTests
     public void ConfigureLogging_ExtractsVersion()
     {
         var loggerFactory = LoggingConfiguration.ConfigureLogging(verbose: false, quiet: false);
-        
+
         Assert.NotNull(loggerFactory);
-        
+
         Log.CloseAndFlush();
     }
 
@@ -58,7 +58,7 @@ public class LoggingConfigurationTests
     public void IsVerboseEnabled_WithCliVerbose_ReturnsTrue()
     {
         var result = LoggingConfiguration.IsVerboseEnabled(cliVerbose: true);
-        
+
         Assert.True(result);
     }
 
@@ -69,9 +69,9 @@ public class LoggingConfigurationTests
         try
         {
             Environment.SetEnvironmentVariable("ROADSTATUS_VERBOSE", "1");
-            
+
             var result = LoggingConfiguration.IsVerboseEnabled(cliVerbose: false);
-            
+
             Assert.True(result);
         }
         finally
@@ -87,9 +87,9 @@ public class LoggingConfigurationTests
         try
         {
             Environment.SetEnvironmentVariable("ROADSTATUS_VERBOSE", "true");
-            
+
             var result = LoggingConfiguration.IsVerboseEnabled(cliVerbose: false);
-            
+
             Assert.True(result);
         }
         finally
@@ -107,9 +107,9 @@ public class LoggingConfigurationTests
         {
             Environment.SetEnvironmentVariable("ROADSTATUS_VERBOSE", null);
             Environment.SetEnvironmentVariable("TFL_VERBOSE", "1");
-            
+
             var result = LoggingConfiguration.IsVerboseEnabled(cliVerbose: false);
-            
+
             Assert.True(result);
         }
         finally
@@ -128,9 +128,9 @@ public class LoggingConfigurationTests
         {
             Environment.SetEnvironmentVariable("ROADSTATUS_VERBOSE", null);
             Environment.SetEnvironmentVariable("TFL_VERBOSE", "true");
-            
+
             var result = LoggingConfiguration.IsVerboseEnabled(cliVerbose: false);
-            
+
             Assert.True(result);
         }
         finally
@@ -149,9 +149,9 @@ public class LoggingConfigurationTests
         {
             Environment.SetEnvironmentVariable("ROADSTATUS_VERBOSE", null);
             Environment.SetEnvironmentVariable("TFL_VERBOSE", null);
-            
+
             var result = LoggingConfiguration.IsVerboseEnabled(cliVerbose: false);
-            
+
             Assert.False(result);
         }
         finally
@@ -170,9 +170,9 @@ public class LoggingConfigurationTests
         {
             Environment.SetEnvironmentVariable("ROADSTATUS_VERBOSE", null);
             Environment.SetEnvironmentVariable("TFL_VERBOSE", "invalid");
-            
+
             var result = LoggingConfiguration.IsVerboseEnabled(cliVerbose: false);
-            
+
             Assert.False(result);
         }
         finally
@@ -186,7 +186,7 @@ public class LoggingConfigurationTests
     public void IsQuietEnabled_WithCliQuiet_ReturnsTrue()
     {
         var result = LoggingConfiguration.IsQuietEnabled(cliQuiet: true);
-        
+
         Assert.True(result);
     }
 
@@ -197,9 +197,9 @@ public class LoggingConfigurationTests
         try
         {
             Environment.SetEnvironmentVariable("ROADSTATUS_QUIET", "1");
-            
+
             var result = LoggingConfiguration.IsQuietEnabled(cliQuiet: false);
-            
+
             Assert.True(result);
         }
         finally
@@ -215,9 +215,9 @@ public class LoggingConfigurationTests
         try
         {
             Environment.SetEnvironmentVariable("ROADSTATUS_QUIET", "true");
-            
+
             var result = LoggingConfiguration.IsQuietEnabled(cliQuiet: false);
-            
+
             Assert.True(result);
         }
         finally
@@ -235,9 +235,9 @@ public class LoggingConfigurationTests
         {
             Environment.SetEnvironmentVariable("ROADSTATUS_QUIET", null);
             Environment.SetEnvironmentVariable("TFL_QUIET", "1");
-            
+
             var result = LoggingConfiguration.IsQuietEnabled(cliQuiet: false);
-            
+
             Assert.True(result);
         }
         finally
@@ -256,9 +256,9 @@ public class LoggingConfigurationTests
         {
             Environment.SetEnvironmentVariable("ROADSTATUS_QUIET", null);
             Environment.SetEnvironmentVariable("TFL_QUIET", "true");
-            
+
             var result = LoggingConfiguration.IsQuietEnabled(cliQuiet: false);
-            
+
             Assert.True(result);
         }
         finally
@@ -277,9 +277,9 @@ public class LoggingConfigurationTests
         {
             Environment.SetEnvironmentVariable("ROADSTATUS_QUIET", null);
             Environment.SetEnvironmentVariable("TFL_QUIET", null);
-            
+
             var result = LoggingConfiguration.IsQuietEnabled(cliQuiet: false);
-            
+
             Assert.False(result);
         }
         finally
@@ -298,9 +298,9 @@ public class LoggingConfigurationTests
         {
             Environment.SetEnvironmentVariable("ROADSTATUS_QUIET", null);
             Environment.SetEnvironmentVariable("TFL_QUIET", "invalid");
-            
+
             var result = LoggingConfiguration.IsQuietEnabled(cliQuiet: false);
-            
+
             Assert.False(result);
         }
         finally

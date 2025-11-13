@@ -44,7 +44,7 @@ public class TflRoadStatusClient : ITflRoadStatusClient
                 {
                     var requestId = context.ContainsKey("RequestId") ? context["RequestId"]?.ToString() : "unknown";
                     var roadId = context.ContainsKey("RoadId") ? context["RoadId"]?.ToString() : "unknown";
-                    
+
                     if (outcome.Exception != null)
                     {
                         _logger.LogDebug(
@@ -73,15 +73,15 @@ public class TflRoadStatusClient : ITflRoadStatusClient
         var startTime = DateTime.UtcNow;
         var requestId = Guid.NewGuid().ToString("N")[..8]; // Short request ID
         var roadIdValue = roadId.ToString();
-        
+
         var url = $"{_baseUrl}/Road/{roadId}";
         if (!string.IsNullOrWhiteSpace(_appId) && !string.IsNullOrWhiteSpace(_appKey))
         {
             url += $"?app_id={Uri.EscapeDataString(_appId)}&app_key={Uri.EscapeDataString(_appKey)}";
         }
-        
+
         var hasCredentials = !string.IsNullOrWhiteSpace(_appId) && !string.IsNullOrWhiteSpace(_appKey);
-        
+
         _logger.LogDebug(
             "Initiating HTTP request to TfL API {RequestId} {RoadId} {RequestUrl} {HasCredentials}",
             requestId,

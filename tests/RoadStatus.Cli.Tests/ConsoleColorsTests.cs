@@ -9,7 +9,7 @@ public class ConsoleColorsTests
     public void Cyan_WithText_ReturnsText()
     {
         var result = ConsoleColors.Cyan("test");
-        
+
         Assert.Contains("test", result);
     }
 
@@ -17,7 +17,7 @@ public class ConsoleColorsTests
     public void Yellow_WithText_ReturnsText()
     {
         var result = ConsoleColors.Yellow("test");
-        
+
         Assert.Contains("test", result);
     }
 
@@ -25,7 +25,7 @@ public class ConsoleColorsTests
     public void Green_WithText_ReturnsText()
     {
         var result = ConsoleColors.Green("test");
-        
+
         Assert.Contains("test", result);
     }
 
@@ -33,7 +33,7 @@ public class ConsoleColorsTests
     public void Bold_WithText_ReturnsText()
     {
         var result = ConsoleColors.Bold("test");
-        
+
         Assert.Contains("test", result);
     }
 
@@ -41,7 +41,7 @@ public class ConsoleColorsTests
     public void Reset_ReturnsString()
     {
         var result = ConsoleColors.Reset;
-        
+
         Assert.NotNull(result);
     }
 
@@ -49,7 +49,7 @@ public class ConsoleColorsTests
     public void Cyan_WithEmptyString_ReturnsEmptyString()
     {
         var result = ConsoleColors.Cyan("");
-        
+
         Assert.Equal("", result);
     }
 
@@ -57,7 +57,7 @@ public class ConsoleColorsTests
     public void Yellow_WithEmptyString_ReturnsEmptyString()
     {
         var result = ConsoleColors.Yellow("");
-        
+
         Assert.Equal("", result);
     }
 
@@ -65,7 +65,7 @@ public class ConsoleColorsTests
     public void Green_WithEmptyString_ReturnsEmptyString()
     {
         var result = ConsoleColors.Green("");
-        
+
         Assert.Equal("", result);
     }
 
@@ -73,7 +73,7 @@ public class ConsoleColorsTests
     public void Bold_WithEmptyString_ReturnsEmptyString()
     {
         var result = ConsoleColors.Bold("");
-        
+
         Assert.Equal("", result);
     }
 
@@ -81,7 +81,7 @@ public class ConsoleColorsTests
     public void Cyan_WithNull_ReturnsNull()
     {
         var result = ConsoleColors.Cyan(null!);
-        
+
         Assert.Null(result);
     }
 
@@ -89,7 +89,7 @@ public class ConsoleColorsTests
     public void Yellow_WithNull_ReturnsNull()
     {
         var result = ConsoleColors.Yellow(null!);
-        
+
         Assert.Null(result);
     }
 
@@ -97,7 +97,7 @@ public class ConsoleColorsTests
     public void Green_WithNull_ReturnsNull()
     {
         var result = ConsoleColors.Green(null!);
-        
+
         Assert.Null(result);
     }
 
@@ -105,7 +105,7 @@ public class ConsoleColorsTests
     public void Bold_WithNull_ReturnsNull()
     {
         var result = ConsoleColors.Bold(null!);
-        
+
         Assert.Null(result);
     }
 
@@ -114,7 +114,7 @@ public class ConsoleColorsTests
     {
         var input = "sample text";
         var result = ConsoleColors.Cyan(input);
-        
+
         Assert.Contains(input, result);
     }
 
@@ -123,7 +123,7 @@ public class ConsoleColorsTests
     {
         var input = "sample text";
         var result = ConsoleColors.Yellow(input);
-        
+
         Assert.Contains(input, result);
     }
 
@@ -132,7 +132,7 @@ public class ConsoleColorsTests
     {
         var input = "sample text";
         var result = ConsoleColors.Green(input);
-        
+
         Assert.Contains(input, result);
     }
 
@@ -141,7 +141,7 @@ public class ConsoleColorsTests
     {
         var input = "sample text";
         var result = ConsoleColors.Bold(input);
-        
+
         Assert.Contains(input, result);
     }
 
@@ -149,7 +149,7 @@ public class ConsoleColorsTests
     public void Cyan_WithColorsEnabled_AddsAnsiCodes()
     {
         var result = ConsoleColors.Cyan("test");
-        
+
         Assert.Contains("test", result);
         if (result != "test")
         {
@@ -162,7 +162,7 @@ public class ConsoleColorsTests
     public void Yellow_WithColorsEnabled_AddsAnsiCodes()
     {
         var result = ConsoleColors.Yellow("test");
-        
+
         Assert.Contains("test", result);
         if (result != "test")
         {
@@ -175,7 +175,7 @@ public class ConsoleColorsTests
     public void Green_WithColorsEnabled_AddsAnsiCodes()
     {
         var result = ConsoleColors.Green("test");
-        
+
         Assert.Contains("test", result);
         if (result != "test")
         {
@@ -188,7 +188,7 @@ public class ConsoleColorsTests
     public void Bold_WithColorsEnabled_AddsAnsiCodes()
     {
         var result = ConsoleColors.Bold("test");
-        
+
         Assert.Contains("test", result);
         if (result != "test")
         {
@@ -201,7 +201,7 @@ public class ConsoleColorsTests
     public void Reset_WithColorsEnabled_ReturnsAnsiCode()
     {
         var result = ConsoleColors.Reset;
-        
+
         Assert.NotNull(result);
         if (result != string.Empty)
         {
@@ -224,7 +224,7 @@ public class ConsoleColorsTests
     {
         var colorsEnabled = GetColorsEnabled();
         var result = ConsoleColors.Cyan("test");
-        
+
         if (colorsEnabled)
         {
             Assert.Contains("\u001b[36m", result);
@@ -242,7 +242,7 @@ public class ConsoleColorsTests
     {
         var colorsEnabled = GetColorsEnabled();
         var result = ConsoleColors.Cyan("test");
-        
+
         if (!colorsEnabled)
         {
             Assert.Equal("test", result);
@@ -255,7 +255,7 @@ public class ConsoleColorsTests
     {
         var colorsEnabled = GetColorsEnabled();
         var result = ConsoleColors.Yellow("test");
-        
+
         if (colorsEnabled)
         {
             Assert.Contains("\u001b[33m", result);
@@ -273,7 +273,7 @@ public class ConsoleColorsTests
     {
         var colorsEnabled = GetColorsEnabled();
         var result = ConsoleColors.Yellow("test");
-        
+
         if (!colorsEnabled)
         {
             Assert.Equal("test", result);
@@ -286,7 +286,7 @@ public class ConsoleColorsTests
     {
         var colorsEnabled = GetColorsEnabled();
         var result = ConsoleColors.Green("test");
-        
+
         if (colorsEnabled)
         {
             Assert.Contains("\u001b[32m", result);
@@ -304,7 +304,7 @@ public class ConsoleColorsTests
     {
         var colorsEnabled = GetColorsEnabled();
         var result = ConsoleColors.Green("test");
-        
+
         if (!colorsEnabled)
         {
             Assert.Equal("test", result);
@@ -317,7 +317,7 @@ public class ConsoleColorsTests
     {
         var colorsEnabled = GetColorsEnabled();
         var result = ConsoleColors.Bold("test");
-        
+
         if (colorsEnabled)
         {
             Assert.Contains("\u001b[1m", result);
@@ -335,7 +335,7 @@ public class ConsoleColorsTests
     {
         var colorsEnabled = GetColorsEnabled();
         var result = ConsoleColors.Bold("test");
-        
+
         if (!colorsEnabled)
         {
             Assert.Equal("test", result);
@@ -348,7 +348,7 @@ public class ConsoleColorsTests
     {
         var colorsEnabled = GetColorsEnabled();
         var result = ConsoleColors.Reset;
-        
+
         if (colorsEnabled)
         {
             Assert.Equal("\u001b[0m", result);
@@ -364,7 +364,7 @@ public class ConsoleColorsTests
     {
         var colorsEnabled = GetColorsEnabled();
         var result = ConsoleColors.Reset;
-        
+
         if (!colorsEnabled)
         {
             Assert.Equal(string.Empty, result);
@@ -374,7 +374,7 @@ public class ConsoleColorsTests
 
     private static bool InvokeShouldEnableColors()
     {
-        var method = typeof(ConsoleColors).GetMethod("ShouldEnableColors", 
+        var method = typeof(ConsoleColors).GetMethod("ShouldEnableColors",
             BindingFlags.NonPublic | BindingFlags.Static);
         if (method == null)
         {
@@ -385,7 +385,7 @@ public class ConsoleColorsTests
 
     private static string InvokeApplyColor(string text, string ansiCode)
     {
-        var method = typeof(ConsoleColors).GetMethod("ApplyColor", 
+        var method = typeof(ConsoleColors).GetMethod("ApplyColor",
             BindingFlags.NonPublic | BindingFlags.Static);
         if (method == null)
         {
@@ -399,7 +399,7 @@ public class ConsoleColorsTests
     {
         var colorsEnabled = GetColorsEnabled();
         var result = InvokeApplyColor("test", "\u001b[36m");
-        
+
         if (colorsEnabled)
         {
             Assert.Contains("\u001b[36m", result);
@@ -417,7 +417,7 @@ public class ConsoleColorsTests
     {
         var colorsEnabled = GetColorsEnabled();
         var result = InvokeApplyColor("test", "\u001b[36m");
-        
+
         if (!colorsEnabled)
         {
             Assert.Equal("test", result);
@@ -437,9 +437,9 @@ public class ConsoleColorsTests
         try
         {
             Environment.SetEnvironmentVariable("NO_COLOR", "1");
-            
+
             var result = InvokeShouldEnableColors();
-            
+
             Assert.False(result);
         }
         finally
@@ -455,9 +455,9 @@ public class ConsoleColorsTests
         try
         {
             Environment.SetEnvironmentVariable("NO_COLOR", " ");
-            
+
             var result = InvokeShouldEnableColors();
-            
+
             Assert.True(result);
         }
         finally
@@ -473,9 +473,9 @@ public class ConsoleColorsTests
         try
         {
             Environment.SetEnvironmentVariable("NO_COLOR", "");
-            
+
             var result = InvokeShouldEnableColors();
-            
+
             Assert.True(result);
         }
         finally
@@ -491,9 +491,9 @@ public class ConsoleColorsTests
         try
         {
             Environment.SetEnvironmentVariable("NO_COLOR", null);
-            
+
             var result = InvokeShouldEnableColors();
-            
+
             Assert.True(result);
         }
         finally
@@ -509,9 +509,9 @@ public class ConsoleColorsTests
         try
         {
             Environment.SetEnvironmentVariable("NO_COLOR", "0");
-            
+
             var result = InvokeShouldEnableColors();
-            
+
             Assert.False(result);
         }
         finally

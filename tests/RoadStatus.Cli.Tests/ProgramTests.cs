@@ -220,7 +220,7 @@ public class ProgramTests
         var originalAppKey = Environment.GetEnvironmentVariable("TFL_APP_KEY");
         var originalBaseUrl = Environment.GetEnvironmentVariable("TFL_BASE_URL");
         var originalWorkingDir = Directory.GetCurrentDirectory();
-        
+
         try
         {
             var output = new StringWriter();
@@ -234,7 +234,7 @@ public class ProgramTests
             Directory.SetCurrentDirectory(tempDir);
 
             var exitCode = await InvokeMainAsync(["--help"]);
-            
+
             Assert.Equal(Program.ExitCodeSuccess, exitCode);
         }
         finally
@@ -335,7 +335,7 @@ public class ProgramTests
             Environment.SetEnvironmentVariable("TFL_APP_KEY", null);
 
             var exitCode = await InvokeMainAsync(new[] { "--verbose", "A2" });
-            
+
             Assert.True(exitCode >= 0);
         }
         finally
@@ -369,19 +369,19 @@ public class ProgramTests
     {
         var programType = typeof(Program);
         var mainMethod = programType.GetMethod("Main", BindingFlags.NonPublic | BindingFlags.Static);
-        
+
         if (mainMethod == null)
         {
             throw new InvalidOperationException("Main method not found");
         }
 
         var result = mainMethod.Invoke(null, [args]);
-        
+
         if (result is Task<int> task)
         {
             return await task;
         }
-        
+
         throw new InvalidOperationException("Main method did not return Task<int>");
     }
 }

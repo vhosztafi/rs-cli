@@ -20,7 +20,7 @@ public class ConfigurationTests
 
         var tempDir = Path.GetTempPath();
         var tempFile = Path.Combine(tempDir, "appsettings.json");
-        
+
         try
         {
             File.WriteAllText(tempFile, appsettingsJson);

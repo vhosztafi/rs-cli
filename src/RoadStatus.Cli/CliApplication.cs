@@ -42,7 +42,7 @@ public class CliApplication
                 var roadId = RoadId.Parse(roadIdString);
                 var roadStatus = await _client.GetRoadStatusAsync(roadId);
                 roadStatuses.Add(roadStatus);
-                
+
                 _logger.LogInformation(
                     "Road status retrieved successfully {CorrelationId} {RoadId} {DisplayName} {StatusSeverity}",
                     correlationId,
@@ -105,7 +105,7 @@ public class CliApplication
 
         var finalExecutionTime = DateTime.UtcNow - startTime;
         var exitCode = hasInvalidRoad ? Program.ExitCodeInvalidRoad : Program.ExitCodeSuccess;
-        
+
         _logger.LogInformation(
             "Road status request completed {CorrelationId} {RoadIds} {ExecutionTimeMs}ms {ExitCode}",
             correlationId,

@@ -10,11 +10,11 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: false);
-        
+
         writer.Write('a');
         writer.Write('b');
         writer.Flush();
-        
+
         Assert.Contains("ab", stringWriter.ToString());
     }
 
@@ -23,12 +23,12 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: false);
-        
+
         writer.Write('a');
         writer.Write('\n');
         writer.Write('b');
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("a", result);
         Assert.Contains("b", result);
@@ -39,10 +39,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: false);
-        
+
         writer.Write("line1\nline2");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("line1", result);
         Assert.Contains("line2", result);
@@ -53,10 +53,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: false);
-        
+
         writer.Write((string?)null);
         writer.Flush();
-        
+
         Assert.NotNull(stringWriter.ToString());
     }
 
@@ -65,10 +65,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: false);
-        
+
         writer.Write("test");
         writer.Flush();
-        
+
         Assert.Contains("test", stringWriter.ToString());
     }
 
@@ -77,10 +77,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: false);
-        
+
         writer.Write('\n');
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("\n", result);
     }
@@ -90,7 +90,7 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: false);
-        
+
         Assert.Equal(stringWriter.Encoding, writer.Encoding);
     }
 
@@ -99,10 +99,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  --json  Output in JSON\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("--json", result);
     }
@@ -112,10 +112,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  -j, --json  Output in JSON\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("-j", result);
         Assert.Contains("--json", result);
@@ -126,10 +126,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  -?, -h, --help  Show help\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("-?", result);
         Assert.Contains("-h", result);
@@ -141,10 +141,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  <road-ids>  Road IDs to check\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("<road-ids>", result);
     }
@@ -154,10 +154,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("Options:\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("Options:", result);
     }
@@ -167,10 +167,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("Query the TfL Road API to display road status information.\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("Query the TfL Road API", result);
     }
@@ -180,10 +180,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: false);
-        
+
         writer.Write("  --json  Output in JSON\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.DoesNotContain("\u001b[", result);
     }
@@ -193,10 +193,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  -j  Output in JSON\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("-j", result);
     }
@@ -206,10 +206,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Equal("\n", result);
     }
@@ -219,10 +219,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: false);
-        
+
         writer.Write("test");
         writer.Dispose();
-        
+
         Assert.Contains("test", stringWriter.ToString());
     }
 
@@ -231,10 +231,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: false);
-        
+
         writer.Write("line1\nline2\nline3");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("line1", result);
         Assert.Contains("line2", result);
@@ -246,12 +246,12 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: false);
-        
+
         writer.Write("test");
         var beforeFlush = stringWriter.ToString();
         writer.Flush();
         var afterFlush = stringWriter.ToString();
-        
+
         Assert.DoesNotContain("test", beforeFlush);
         Assert.Contains("test", afterFlush);
     }
@@ -261,10 +261,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Equal("", result);
     }
@@ -282,7 +282,7 @@ public class ColoredTextWriterTests
         {
             Assert.Contains("\u001b[33m-j\u001b[0m", result1);
         }
-        
+
         var stringWriter2 = new StringWriter();
         var writer2 = new ColoredTextWriter(stringWriter2, enableColors: true);
         writer2.Write("  --json  Long option\n");
@@ -293,7 +293,7 @@ public class ColoredTextWriterTests
         {
             Assert.Contains("\u001b[33m--json\u001b[0m", result2);
         }
-        
+
         var stringWriter3 = new StringWriter();
         var writer3 = new ColoredTextWriter(stringWriter3, enableColors: true);
         writer3.Write("  --version  Version option\n");
@@ -304,7 +304,7 @@ public class ColoredTextWriterTests
         {
             Assert.Contains("\u001b[33m--version\u001b[0m", result3);
         }
-        
+
         var stringWriter4 = new StringWriter();
         var writer4 = new ColoredTextWriter(stringWriter4, enableColors: true);
         writer4.Write("  -?  Question mark\n");
@@ -315,7 +315,7 @@ public class ColoredTextWriterTests
         {
             Assert.Contains("\u001b[33m-?\u001b[0m", result4);
         }
-        
+
         var stringWriter5 = new StringWriter();
         var writer5 = new ColoredTextWriter(stringWriter5, enableColors: true);
         writer5.Write("  -h  Help short\n");
@@ -326,7 +326,7 @@ public class ColoredTextWriterTests
         {
             Assert.Contains("\u001b[33m-h\u001b[0m", result5);
         }
-        
+
         var stringWriter6 = new StringWriter();
         var writer6 = new ColoredTextWriter(stringWriter6, enableColors: true);
         writer6.Write("  --help  Help long\n");
@@ -344,10 +344,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("    --json  With spaces\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("    ", result);
         Assert.Contains("--json", result);
@@ -362,10 +362,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  test--json  Not an option\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.DoesNotContain("\u001b[33m--json\u001b[0m", result);
         Assert.Contains("test--json", result);
@@ -376,10 +376,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  --json5  Not an option\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.DoesNotContain("\u001b[33m--json\u001b[0m", result);
     }
@@ -389,10 +389,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("--json  At start\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("--json", result);
         if (result.Contains("\u001b[33m"))
@@ -406,10 +406,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  Use --json\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("--json", result);
         if (result.Contains("\u001b[33m"))
@@ -423,10 +423,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  -j or --json or --version\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("-j", result);
         Assert.Contains("--json", result);
@@ -444,10 +444,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  <road-ids>  Argument\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("<road-ids>", result);
         if (result.Contains("\u001b[32m"))
@@ -461,10 +461,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  <road-ids>  Road IDs\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("<road-ids>", result);
         if (result.Contains("\u001b[32m"))
@@ -478,10 +478,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  <arg1> and <arg2>  Multiple args\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("<arg1>", result);
         Assert.Contains("<arg2>", result);
@@ -497,10 +497,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  <unclosed  No closing bracket\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.DoesNotContain("\u001b[32m", result);
         Assert.Contains("<unclosed", result);
@@ -511,10 +511,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  Use <arg>\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("<arg>", result);
         if (result.Contains("\u001b[32m"))
@@ -528,10 +528,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("Options:\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("Options:", result);
         if (result.Contains("\u001b[1m"))
@@ -545,10 +545,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  Arguments:\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("Arguments:", result);
         if (result.Contains("\u001b[1m"))
@@ -562,10 +562,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("This is a very long header line that exceeds fifty characters:\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.DoesNotContain("\u001b[1m", result);
     }
@@ -575,10 +575,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("One Two Three Four:\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.DoesNotContain("\u001b[1m", result);
     }
@@ -588,10 +588,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("This is a long description line that exceeds thirty characters\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("This is a long description line", result);
         if (result.Contains("\u001b[36m"))
@@ -605,10 +605,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  This is a long description line that exceeds thirty characters\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.DoesNotContain("\u001b[36m", result);
     }
@@ -618,10 +618,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("-This is a long description line that exceeds thirty characters\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.DoesNotContain("\u001b[36m", result);
     }
@@ -631,10 +631,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("Short line\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("Short line", result);
         Assert.DoesNotContain("\u001b[", result);
@@ -645,10 +645,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  --json --version\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("--json", result);
         Assert.Contains("--version", result);
@@ -668,10 +668,10 @@ public class ColoredTextWriterTests
             Environment.SetEnvironmentVariable("NO_COLOR", "1");
             var stringWriter = new StringWriter();
             var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-            
+
             writer.Write("  --json  Test\n");
             writer.Flush();
-            
+
             var result = stringWriter.ToString();
             Assert.DoesNotContain("\u001b[", result);
         }
@@ -690,10 +690,10 @@ public class ColoredTextWriterTests
             Environment.SetEnvironmentVariable("NO_COLOR", " ");
             var stringWriter = new StringWriter();
             var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-            
+
             writer.Write("  --json  Test\n");
             writer.Flush();
-            
+
             var result = stringWriter.ToString();
             Assert.DoesNotContain("\u001b[", result);
         }
@@ -708,10 +708,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: false);
-        
+
         writer.Write("  --json  Test\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.DoesNotContain("\u001b[", result);
     }
@@ -721,10 +721,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  <unclosed bracket\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("<unclosed bracket", result);
         Assert.DoesNotContain("\u001b[32m", result);
@@ -735,10 +735,10 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  <arg> text\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.Contains("<arg>", result);
         if (result.Contains("\u001b[32m"))
@@ -752,17 +752,17 @@ public class ColoredTextWriterTests
     {
         var stringWriter = new StringWriter();
         var writer = new ColoredTextWriter(stringWriter, enableColors: true);
-        
+
         writer.Write("  >arg<\n");
         writer.Flush();
-        
+
         var result = stringWriter.ToString();
         Assert.DoesNotContain("\u001b[32m", result);
     }
 
     private static string InvokeApplyColorsToLine(string line)
     {
-        var method = typeof(ColoredTextWriter).GetMethod("ApplyColorsToLine", 
+        var method = typeof(ColoredTextWriter).GetMethod("ApplyColorsToLine",
             BindingFlags.NonPublic | BindingFlags.Static);
         if (method == null)
         {

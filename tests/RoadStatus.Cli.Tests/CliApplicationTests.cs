@@ -220,12 +220,12 @@ public class CliApplicationTests
             {
                 throw new InvalidOperationException("Generic exception message");
             }
-            
+
             if (_shouldThrowRoadStatusException)
             {
                 throw new RoadStatusException("Unable to connect to TfL API. Please check your internet connection and try again.");
             }
-            
+
             if (_shouldThrowNotFound || _invalidRoadIds.Contains(roadIdString))
             {
                 throw new UnknownRoadException(roadIdString);
