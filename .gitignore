@@ -6,4 +6,6 @@ obj
 bin
 publish/
 .vs/
+**/appsettings.json
+!**/appsettings.json.example
 *.user

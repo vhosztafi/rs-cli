@@ -1,0 +1,7 @@
+{
+  "TflApi": {
+    "BaseUrl": "https://api.tfl.gov.uk",
+    "AppId": "",
+    "AppKey": ""
+  }
+}

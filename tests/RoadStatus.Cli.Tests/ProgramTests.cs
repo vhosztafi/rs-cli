@@ -215,6 +215,41 @@ public class ProgramTests
         }
     }
 
+    [Fact]
+    public async Task Main_WithoutAppSettingsJson_WorksWithDefaults()
+    {
+        var originalOut = Console.Out;
+        var originalAppId = Environment.GetEnvironmentVariable("TFL_APP_ID");
+        var originalAppKey = Environment.GetEnvironmentVariable("TFL_APP_KEY");
+        var originalBaseUrl = Environment.GetEnvironmentVariable("TFL_BASE_URL");
+        var originalWorkingDir = Directory.GetCurrentDirectory();
+        
+        try
+        {
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            Environment.SetEnvironmentVariable("TFL_APP_ID", null);
+            Environment.SetEnvironmentVariable("TFL_APP_KEY", null);
+            Environment.SetEnvironmentVariable("TFL_BASE_URL", null);
+
+            var tempDir = Path.GetTempPath();
+            Directory.SetCurrentDirectory(tempDir);
+
+            var exitCode = await InvokeMainAsync(["--help"]);
+            
+            Assert.Equal(Program.ExitCodeSuccess, exitCode);
+        }
+        finally
+        {
+            Console.SetOut(originalOut);
+            Directory.SetCurrentDirectory(originalWorkingDir);
+            Environment.SetEnvironmentVariable("TFL_APP_ID", originalAppId);
+            Environment.SetEnvironmentVariable("TFL_APP_KEY", originalAppKey);
+            Environment.SetEnvironmentVariable("TFL_BASE_URL", originalBaseUrl);
+        }
+    }
+
     private static async Task<int> InvokeMainAsync(string[] args)
     {
         var programType = typeof(Program);

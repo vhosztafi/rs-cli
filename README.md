@@ -254,36 +254,89 @@ Both pipelines can be used depending on your CI/CD platform preference.
 
 ## Configuration
 
+The application supports multiple configuration methods with the following precedence (highest to lowest):
+
+1. **Constructor parameters** (for testing) - highest priority
+2. **Environment variables** - override appsettings.json
+3. **appsettings.json** - default configuration file
+4. **Default values** - hardcoded defaults
+
 ### API Keys
 
 The TfL Road API can be used without authentication, but authenticated requests benefit from higher rate limits (500 requests/minute vs. lower limits for unauthenticated requests).
 
-To use API credentials:
+To use API credentials, you can configure them via **appsettings.json** or **environment variables**:
 
-1. **Obtain API keys**: Register for a free TfL API account at [https://api.tfl.gov.uk/](https://api.tfl.gov.uk/) to get your `app_id` and `app_key`.
+#### Option 1: appsettings.json (Recommended for Development)
 
-2. **Set environment variables**:
-   - **Windows (PowerShell)**:
-     ```powershell
-     $env:TFL_APP_ID="your_app_id_here"
-     $env:TFL_APP_KEY="your_app_key_here"
-     ```
-   - **Windows (CMD)**:
-     ```cmd
-     set TFL_APP_ID=your_app_id_here
-     set TFL_APP_KEY=your_app_key_here
-     ```
-   - **Linux/macOS (Bash)**:
-     ```bash
-     export TFL_APP_ID=your_app_id_here
-     export TFL_APP_KEY=your_app_key_here
-     ```
+Create or edit `appsettings.json` in the application directory:
 
-3. **Security note**: Never commit API keys to version control. Use environment variables, secure configuration files, or secret management systems in production environments.
+```json
+{
+  "TflApi": {
+    "BaseUrl": "https://api.tfl.gov.uk",
+    "AppId": "your_app_id_here",
+    "AppKey": "your_app_key_here"
+  }
+}
+```
+
+**Note**: For security, consider leaving `AppId` and `AppKey` empty in `appsettings.json` and using environment variables instead (see Option 2).
+
+#### Option 2: Environment Variables (Recommended for Production)
+
+Environment variables override values from `appsettings.json`:
+
+- **Windows (PowerShell)**:
+  ```powershell
+  $env:TFL_APP_ID="your_app_id_here"
+  $env:TFL_APP_KEY="your_app_key_here"
+  ```
+- **Windows (CMD)**:
+  ```cmd
+  set TFL_APP_ID=your_app_id_here
+  set TFL_APP_KEY=your_app_key_here
+  ```
+- **Linux/macOS (Bash)**:
+  ```bash
+  export TFL_APP_ID=your_app_id_here
+  export TFL_APP_KEY=your_app_key_here
+  ```
 
 ### Base URL
 
-The application defaults to `https://api.tfl.gov.uk` but can be configured via the `TflRoadStatusClient` constructor for testing or custom endpoints.
+The application defaults to `https://api.tfl.gov.uk` but can be configured via:
+
+1. **appsettings.json**:
+   ```json
+   {
+     "TflApi": {
+       "BaseUrl": "https://custom.api.tfl.gov.uk"
+     }
+   }
+   ```
+
+2. **Environment variable** (overrides appsettings.json):
+   ```bash
+   export TFL_BASE_URL="https://custom.api.tfl.gov.uk"
+   ```
+
+3. **Constructor parameter** (for testing):
+   ```csharp
+   var client = new TflRoadStatusClient(httpClient, baseUrl: "https://test.api.tfl.gov.uk");
+   ```
+
+### Configuration Precedence Example
+
+If you have:
+- `appsettings.json` with `AppId: "appsettings-id"`
+- Environment variable `TFL_APP_ID="env-id"`
+
+The application will use `"env-id"` because environment variables override appsettings.json.
+
+### Security Note
+
+Never commit API keys to version control. Use environment variables, secure configuration files, or secret management systems in production environments. Consider adding `appsettings.json` to `.gitignore` if it contains sensitive information.
 
 ## Assumptions
 
