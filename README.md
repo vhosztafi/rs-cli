@@ -15,6 +15,24 @@ This application queries the Transport for London (TfL) Road API to retrieve and
 dotnet build
 ```
 
+Or use the `just` command runner:
+
+```bash
+just build
+```
+
+## Development Commands
+
+This project includes a `justfile` for common development tasks. Install [just](https://github.com/casey/just) to use these commands:
+
+- **`just build`** - Build the solution
+- **`just build-release`** - Build in Release configuration
+- **`just test`** - Run all tests
+- **`just coverage`** - Run tests with code coverage collection
+- **`just coverage-html`** - Generate HTML coverage reports from collected coverage data
+- **`just format`** - Format code using .NET format tool
+- **`just format-check`** - Check code formatting without making changes
+
 ## Run
 
 The application works without API credentials, but setting them enables higher rate limits (500 requests/minute). To use credentials, set them as environment variables:
@@ -372,6 +390,29 @@ The application will use `"env-id"` because environment variables override appse
 ### Security Note
 
 Never commit API keys to version control. Use environment variables, secure configuration files, or secret management systems in production environments. Consider adding `appsettings.json` to `.gitignore` if it contains sensitive information.
+
+## Coding Style
+
+This project follows consistent coding style standards defined in `.editorconfig`. The key style choices include:
+
+### Code Style Preferences
+
+- **Field Qualification**: Fields should not be qualified with `this.` (e.g., use `fieldName` instead of `this.fieldName`)
+- **Property Qualification**: Properties should not be qualified with `this.` (e.g., use `PropertyName` instead of `this.PropertyName`)
+- **Method Qualification**: Methods should not be qualified with `this.` (e.g., use `MethodName()` instead of `this.MethodName()`)
+- **Event Qualification**: Events should not be qualified with `this.` (e.g., use `EventName` instead of `this.EventName`)
+
+These preferences are enforced via `.editorconfig` and are automatically applied by IDEs and the `dotnet format` tool. To check code formatting:
+
+```bash
+just format-check
+```
+
+To automatically format code:
+
+```bash
+just format
+```
 
 ## Assumptions
 
