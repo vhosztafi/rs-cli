@@ -50,6 +50,100 @@ public class TflRoadStatusClientTests
         Assert.Equal("A233 is not a valid road", exception.Message);
     }
 
+    [Fact]
+    public async Task GetRoadStatusAsync_PascalCaseJson_ReturnsRoadStatus()
+    {
+        const string displayName = "A2";
+        const string statusSeverity = "Good";
+        const string statusDescription = "No Exceptional Delays";
+
+        var roadStatusDto = new
+        {
+            DisplayName = displayName,
+            StatusSeverity = statusSeverity,
+            StatusSeverityDescription = statusDescription
+        };
+        var jsonResponse = JsonSerializer.Serialize(new[] { roadStatusDto });
+
+        var handler = new TestHttpMessageHandler(HttpStatusCode.OK, jsonResponse);
+        var httpClient = new HttpClient(handler);
+        var client = new TflRoadStatusClient(httpClient, "https://api.tfl.gov.uk");
+
+        var roadId = RoadId.Parse("A2");
+        var result = await client.GetRoadStatusAsync(roadId);
+
+        Assert.Equal(displayName, result.DisplayName);
+        Assert.Equal(statusSeverity, result.StatusSeverity);
+        Assert.Equal(statusDescription, result.StatusDescription);
+    }
+
+    [Fact]
+    public async Task GetRoadStatusAsync_MixedCaseJson_ReturnsRoadStatus()
+    {
+        const string displayName = "A2";
+        const string statusSeverity = "Good";
+        const string statusDescription = "No Exceptional Delays";
+
+        var jsonResponse = "[{\"DisplayName\":\"" + displayName + "\",\"statusSeverity\":\"" + statusSeverity + "\",\"STATUSSEVERITYDESCRIPTION\":\"" + statusDescription + "\"}]";
+
+        var handler = new TestHttpMessageHandler(HttpStatusCode.OK, jsonResponse);
+        var httpClient = new HttpClient(handler);
+        var client = new TflRoadStatusClient(httpClient, "https://api.tfl.gov.uk");
+
+        var roadId = RoadId.Parse("A2");
+        var result = await client.GetRoadStatusAsync(roadId);
+
+        Assert.Equal(displayName, result.DisplayName);
+        Assert.Equal(statusSeverity, result.StatusSeverity);
+        Assert.Equal(statusDescription, result.StatusDescription);
+    }
+
+    [Fact]
+    public async Task GetRoadStatusAsync_EmptyDisplayName_ThrowsUnknownRoadException()
+    {
+        var roadStatusDto = new
+        {
+            displayName = "",
+            statusSeverity = "Good",
+            statusSeverityDescription = "No Exceptional Delays"
+        };
+        var jsonResponse = JsonSerializer.Serialize(new[] { roadStatusDto });
+
+        var handler = new TestHttpMessageHandler(HttpStatusCode.OK, jsonResponse);
+        var httpClient = new HttpClient(handler);
+        var client = new TflRoadStatusClient(httpClient, "https://api.tfl.gov.uk");
+
+        var roadId = RoadId.Parse("A2");
+
+        var exception = await Assert.ThrowsAsync<UnknownRoadException>(
+            () => client.GetRoadStatusAsync(roadId));
+
+        Assert.Equal("A2 is not a valid road", exception.Message);
+    }
+
+    [Fact]
+    public async Task GetRoadStatusAsync_WhitespaceStatusSeverity_ThrowsUnknownRoadException()
+    {
+        var roadStatusDto = new
+        {
+            displayName = "A2",
+            statusSeverity = "   ",
+            statusSeverityDescription = "No Exceptional Delays"
+        };
+        var jsonResponse = JsonSerializer.Serialize(new[] { roadStatusDto });
+
+        var handler = new TestHttpMessageHandler(HttpStatusCode.OK, jsonResponse);
+        var httpClient = new HttpClient(handler);
+        var client = new TflRoadStatusClient(httpClient, "https://api.tfl.gov.uk");
+
+        var roadId = RoadId.Parse("A2");
+
+        var exception = await Assert.ThrowsAsync<UnknownRoadException>(
+            () => client.GetRoadStatusAsync(roadId));
+
+        Assert.Equal("A2 is not a valid road", exception.Message);
+    }
+
     private sealed class TestHttpMessageHandler : HttpMessageHandler
     {
         private readonly HttpStatusCode _statusCode;

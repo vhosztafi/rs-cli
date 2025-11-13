@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace RoadStatus.Core;
 
@@ -9,6 +10,10 @@ public class TflRoadStatusClient : ITflRoadStatusClient
     private readonly string _baseUrl;
     private readonly string? _appId;
     private readonly string? _appKey;
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
     public TflRoadStatusClient(HttpClient httpClient, string baseUrl = "https://api.tfl.gov.uk", string? appId = null, string? appKey = null)
     {
@@ -34,7 +39,7 @@ public class TflRoadStatusClient : ITflRoadStatusClient
 
         response.EnsureSuccessStatusCode();
 
-        var roadStatuses = await response.Content.ReadFromJsonAsync<RoadStatusDto[]>();
+        var roadStatuses = await response.Content.ReadFromJsonAsync<RoadStatusDto[]>(JsonOptions);
 
         if (roadStatuses == null || roadStatuses.Length == 0)
         {
@@ -42,6 +47,13 @@ public class TflRoadStatusClient : ITflRoadStatusClient
         }
 
         var roadStatus = roadStatuses[0];
+        if (string.IsNullOrWhiteSpace(roadStatus.DisplayName) ||
+            string.IsNullOrWhiteSpace(roadStatus.StatusSeverity) ||
+            string.IsNullOrWhiteSpace(roadStatus.StatusSeverityDescription))
+        {
+            throw new UnknownRoadException(roadId.ToString());
+        }
+
         return new RoadStatus(
             roadStatus.DisplayName,
             roadStatus.StatusSeverity,
