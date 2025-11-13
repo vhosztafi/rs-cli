@@ -70,6 +70,17 @@ public class CliArgumentParserTests
     }
 
     [Fact]
+    public void Parse_WindowsHelpFlag_ReturnsShowHelp()
+    {
+        var parser = new CliArgumentParser();
+        var args = new[] { "/?" };
+
+        var result = parser.Parse(args);
+
+        Assert.True(result.ShouldShowHelp);
+    }
+
+    [Fact]
     public void Parse_VersionFlag_ReturnsShowVersion()
     {
         var parser = new CliArgumentParser();
