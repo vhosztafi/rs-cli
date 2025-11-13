@@ -1,5 +1,8 @@
 # RoadStatus CLI
 
+[![CI](https://github.com/vhosztafi/rs-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/vhosztafi/rs-cli/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/vhosztafi/rs-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/vhosztafi/rs-cli)
+
 A .NET console application that queries the TfL Road API to display road status information.
 
 ## Overview
