@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="reqnroll.json">
+    <None Update="xunit.runner.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
