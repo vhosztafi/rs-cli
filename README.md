@@ -159,6 +159,35 @@ The coverage format (Cobertura XML) matches what is generated locally, ensuring 
 
 Integration tests are opt-in. Set `RUN_LIVE_INTEGRATION=1` along with `TFL_APP_ID` and `TFL_APP_KEY` to run live API tests.
 
+### Behavior-Driven Development (BDD)
+
+This project uses Behavior-Driven Development (BDD) with Gherkin specifications to ensure that requirements are translated into executable specifications. The feature files are located in `tests/RoadStatus.Specs/Features/` and mirror the scenarios from the project brief.
+
+Here's a sample feature file that demonstrates how the requirements were turned into executable specs:
+
+```gherkin
+Feature: Road Status Query
+	As a user
+	I want to query the status of a road
+	So that I can see the current status information
+
+Scenario: Query valid road ID
+	Given I want to query the road status
+	When I run the CLI with road ID "A2"
+	Then the exit code should be 0
+	And the output should contain "The status of the A2 is as follows"
+	And the output should contain "Road Status is"
+	And the output should contain "Road Status Description is"
+
+Scenario: Query invalid road ID
+	Given I want to query the road status
+	When I run the CLI with road ID "A233"
+	Then the exit code should be 1
+	And the output should contain "A233 is not a valid road"
+```
+
+These Gherkin specifications are executed using Reqnroll (the .NET port of Cucumber), ensuring that the application behavior matches the specified requirements.
+
 ## Git Hooks
 
 The project includes git hooks to enforce code quality and commit message standards, similar to husky in Node.js projects.
@@ -228,6 +257,12 @@ The CI workflow (`.github/workflows/ci.yml`) runs on push and pull requests and:
 - Uploads coverage and test result artifacts
 
 The pipeline runs on Ubuntu latest with .NET 8.0.
+
+#### Static Analysis / Quality Gates
+
+Static analysis (Qodana) runs as part of CI and enforces quality gates. The Qodana workflow (`.github/workflows/qodana_code_quality.yml`) runs on push and pull requests, analyzing the codebase for code quality issues, potential bugs, and adherence to best practices.
+
+Quality gates are configured via `qodana.yaml` and ensure that code quality standards are maintained throughout the development process. The analysis helps catch issues early and maintains consistency across the codebase.
 
 #### Nightly Integration Tests
 
