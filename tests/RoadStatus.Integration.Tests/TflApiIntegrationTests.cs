@@ -1,19 +1,23 @@
-using System.Net;
-using System.Text;
 using System.Text.Json;
 using RoadStatus.Core;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+using WireMock.Server;
+using WireMock.Settings;
 using Xunit;
 
 namespace RoadStatus.Integration.Tests;
 
-public class TflApiIntegrationTests
+public class TflApiIntegrationTests : IAsyncLifetime
 {
+    private WireMockServer? _wireMockServer;
+
     private static bool IsLiveIntegrationEnabled()
     {
         return Environment.GetEnvironmentVariable("RUN_LIVE_INTEGRATION") == "1";
     }
 
-    private static TflRoadStatusClient CreateClient()
+    private TflRoadStatusClient CreateClient()
     {
         if (IsLiveIntegrationEnabled())
         {
@@ -28,11 +32,16 @@ public class TflApiIntegrationTests
         }
     }
 
-    private static TflRoadStatusClient CreateMockedClient()
+    private TflRoadStatusClient CreateMockedClient()
     {
-        var handler = new TestHttpMessageHandler(HttpStatusCode.OK, GetMockedResponse());
-        var httpClient = new HttpClient(handler);
-        return new TflRoadStatusClient(httpClient);
+        if (_wireMockServer == null)
+        {
+            throw new InvalidOperationException("WireMock server is not initialized. Ensure InitializeAsync has been called.");
+        }
+
+        var httpClient = new HttpClient();
+        var baseUrl = _wireMockServer.Url!;
+        return new TflRoadStatusClient(httpClient, baseUrl: baseUrl);
     }
 
     private static string GetMockedResponse()
@@ -67,12 +76,8 @@ public class TflApiIntegrationTests
 
         if (!IsLiveIntegrationEnabled())
         {
-            var notFoundHandler = new TestHttpMessageHandler(HttpStatusCode.NotFound, string.Empty);
-            var notFoundHttpClient = new HttpClient(notFoundHandler);
-            var notFoundClient = new TflRoadStatusClient(notFoundHttpClient);
-
             var exception = await Assert.ThrowsAsync<UnknownRoadException>(
-                () => notFoundClient.GetRoadStatusAsync(roadId));
+                () => client.GetRoadStatusAsync(roadId));
 
             Assert.Equal("A233 is not a valid road", exception.Message);
         }
@@ -85,27 +90,44 @@ public class TflApiIntegrationTests
         }
     }
 
-    private sealed class TestHttpMessageHandler : HttpMessageHandler
+    public async Task InitializeAsync()
     {
-        private readonly HttpStatusCode _statusCode;
-        private readonly string _content;
-
-        public TestHttpMessageHandler(HttpStatusCode statusCode, string content)
+        if (!IsLiveIntegrationEnabled())
         {
-            _statusCode = statusCode;
-            _content = content;
-        }
-
-        protected override Task<HttpResponseMessage> SendAsync(
-            HttpRequestMessage request,
-            CancellationToken cancellationToken)
-        {
-            var response = new HttpResponseMessage(_statusCode)
+            _wireMockServer = WireMockServer.Start(new WireMockServerSettings
             {
-                Content = new StringContent(_content, Encoding.UTF8, "application/json")
-            };
-            return Task.FromResult(response);
+                Urls = ["http://localhost:0"]
+            });
+
+            _wireMockServer
+                .Given(Request.Create()
+                    .WithPath("/Road/A2")
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBody(GetMockedResponse()));
+
+            _wireMockServer
+                .Given(Request.Create()
+                    .WithPath("/Road/A233")
+                    .UsingGet())
+                .RespondWith(Response.Create()
+                    .WithStatusCode(404));
         }
+
+        await Task.CompletedTask;
+    }
+
+    public async Task DisposeAsync()
+    {
+        if (_wireMockServer != null)
+        {
+            _wireMockServer.Stop();
+            _wireMockServer.Dispose();
+        }
+
+        await Task.CompletedTask;
     }
 }
 
