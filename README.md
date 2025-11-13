@@ -66,9 +66,35 @@ $lastexitcode
 
 ## Tests
 
+### Running Tests
+
+Run all tests:
+
 ```bash
 dotnet test
 ```
+
+Or use the provided test scripts that include code coverage collection:
+
+- **Windows (PowerShell)**:
+  ```powershell
+  .\scripts\test.ps1
+  ```
+
+- **Linux/macOS (Bash)**:
+  ```bash
+  ./scripts/test.sh
+  ```
+
+### Code Coverage
+
+Code coverage is automatically collected when using the test scripts. Coverage data is saved to the `TestResults` directory in the coverage format.
+
+To view coverage reports, you can use tools like:
+- Visual Studio Code Coverage viewer
+- Other coverage analysis tools that support the XPlat Code Coverage format
+
+### Integration Tests
 
 Integration tests are opt-in. Set `RUN_LIVE_INTEGRATION=1` along with `TFL_APP_ID` and `TFL_APP_KEY` to run live API tests.
 
