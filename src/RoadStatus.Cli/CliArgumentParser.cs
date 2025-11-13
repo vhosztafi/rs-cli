@@ -1,8 +1,8 @@
 namespace RoadStatus.Cli;
 
-public sealed class CliArgumentParser
+public class CliArgumentParser
 {
-    public CliArgumentParseResult Parse(string[] args)
+    public virtual CliArgumentParseResult Parse(string[] args)
     {
         if (args.Length == 0)
         {

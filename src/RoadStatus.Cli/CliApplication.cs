@@ -2,7 +2,7 @@ using RoadStatus.Core;
 
 namespace RoadStatus.Cli;
 
-public sealed class CliApplication
+public class CliApplication
 {
     private readonly CliArgumentParser _parser;
     private readonly ITflRoadStatusClient _client;
@@ -38,7 +38,7 @@ public sealed class CliApplication
 
         if (parseResult.ShouldShowVersion)
         {
-            var version = typeof(Program).Assembly.GetName().Version;
+            var version = GetVersion();
             await output.WriteLineAsync($"RoadStatus CLI {version?.Major}.{version?.Minor}.{version?.Build ?? 0}");
             return Program.ExitCodeSuccess;
         }
@@ -70,5 +70,10 @@ public sealed class CliApplication
             await output.WriteLineAsync(ex.Message);
             return Program.ExitCodeInvalidRoad;
         }
+    }
+
+    protected virtual Version? GetVersion()
+    {
+        return typeof(Program).Assembly.GetName().Version;
     }
 }
