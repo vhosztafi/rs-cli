@@ -8,16 +8,9 @@ namespace RoadStatus.Specs.StepDefinitions;
 [Binding]
 public class RoadStatusSteps
 {
-    private readonly ScenarioContext _scenarioContext;
-    private string? _roadId;
     private int _exitCode;
     private string _output = string.Empty;
     private string _errorOutput = string.Empty;
-
-    public RoadStatusSteps(ScenarioContext scenarioContext)
-    {
-        _scenarioContext = scenarioContext;
-    }
 
     [Given("I want to query the road status")]
     public void GivenIWantToQueryTheRoadStatus()
@@ -27,8 +20,6 @@ public class RoadStatusSteps
     [When(@"I run the CLI with road ID ""(.*)""")]
     public void WhenIRunTheCliWithRoadId(string roadId)
     {
-        _roadId = roadId;
-
         var solutionDirectory = GetSolutionDirectory();
         var cliProjectPath = Path.Combine(solutionDirectory, "src", "RoadStatus.Cli", "RoadStatus.Cli.csproj");
 
@@ -106,4 +97,3 @@ public class RoadStatusSteps
         return directory.FullName;
     }
 }
-

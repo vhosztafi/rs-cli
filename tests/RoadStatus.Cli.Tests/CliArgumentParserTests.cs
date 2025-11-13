@@ -1,4 +1,3 @@
-using RoadStatus.Cli;
 using Xunit;
 
 namespace RoadStatus.Cli.Tests;

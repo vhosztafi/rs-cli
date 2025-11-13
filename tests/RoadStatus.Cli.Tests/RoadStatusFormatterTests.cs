@@ -1,5 +1,3 @@
-using RoadStatus.Cli;
-using RoadStatus.Core;
 using CoreRoadStatus = RoadStatus.Core.RoadStatus;
 using Xunit;
 

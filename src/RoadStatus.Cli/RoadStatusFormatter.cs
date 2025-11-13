@@ -1,5 +1,3 @@
-using RoadStatus.Core;
-
 namespace RoadStatus.Cli;
 
 public sealed class RoadStatusFormatter
