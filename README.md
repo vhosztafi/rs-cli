@@ -98,6 +98,20 @@ To view coverage reports, you can use tools like:
 
 Integration tests are opt-in. Set `RUN_LIVE_INTEGRATION=1` along with `TFL_APP_ID` and `TFL_APP_KEY` to run live API tests.
 
+## Continuous Integration
+
+The project includes a GitHub Actions CI pipeline (`.github/workflows/ci.yml`) that:
+
+- Builds the solution on push and pull requests
+- Runs all tests with code coverage collection
+- Uploads coverage reports and test results as artifacts
+
+The pipeline runs on:
+- Ubuntu latest
+- .NET 8.0
+
+Coverage and test result artifacts are retained for 30 days and can be downloaded from the GitHub Actions run page.
+
 ## Configuration
 
 ### API Keys
