@@ -1,39 +1,7 @@
 #!/bin/bash
-# Pre-commit hook to validate conventional commit messages
+# Pre-commit hook (placeholder)
+# Commit message validation is handled by the commit-msg hook
 
-commit_msg_file="$1"
-commit_msg=$(cat "$commit_msg_file")
-
-conventional_pattern='^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .+'
-merge_pattern='^Merge .+'
-revert_pattern='^Revert .+'
-
-if echo "$commit_msg" | grep -qE "$conventional_pattern"; then
-    exit 0
-fi
-
-if echo "$commit_msg" | grep -qE "$merge_pattern"; then
-    exit 0
-fi
-
-if echo "$commit_msg" | grep -qE "$revert_pattern"; then
-    exit 0
-fi
-
-echo "❌ Invalid commit message format!"
-echo ""
-echo "Commit messages must follow the Conventional Commits specification:"
-echo "  type(scope): subject"
-echo ""
-echo "Allowed types: feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert"
-echo ""
-echo "Examples:"
-echo "  feat: add new feature"
-echo "  fix(core): resolve bug in parsing"
-echo "  docs: update README"
-echo "  chore: update dependencies"
-echo ""
-echo "Your message:"
-echo "  $commit_msg"
-echo ""
-exit 1
+# This hook can be used for other pre-commit checks if needed
+# For now, it's a no-op that always succeeds
+exit 0

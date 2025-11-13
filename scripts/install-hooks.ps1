@@ -9,13 +9,13 @@ if (-not (Test-Path ".githooks")) {
     exit 1
 }
 
-$preCommitWrapper = @'
+$commitMsgWrapper = @'
 #!/bin/sh
-# Wrapper to detect shell and call appropriate pre-commit hook
+# Wrapper to detect shell and call appropriate commit-msg hook
 if [ -n "$PSVersionTable" ] || [ -n "$POWERSHELL_DISTRIBUTION_CHANNEL" ]; then
-    pwsh -File .githooks/pre-commit.ps1 "$@"
+    pwsh -File .githooks/commit-msg.ps1 "$@"
 else
-    .githooks/pre-commit "$@"
+    .githooks/commit-msg "$@"
 fi
 '@
 
@@ -35,7 +35,7 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "✅ Git hooks installed successfully!" -ForegroundColor Green
     Write-Host ""
     Write-Host "Hooks configured:"
-    Write-Host "  - pre-commit: Validates conventional commit messages"
+    Write-Host "  - commit-msg: Validates conventional commit messages"
     Write-Host "  - pre-push: Runs unit tests before pushing"
     Write-Host ""
     Write-Host "Note: Hooks will run in Git Bash environment on Windows."

@@ -1,7 +1,7 @@
 # RoadStatus CLI
 
 [![CI](https://github.com/vhosztafi/rs-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/vhosztafi/rs-cli/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/vhosztafi/rs-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/vhosztafi/rs-cli)
+[![codecov](https://codecov.io/gh/vhosztafi/rs-cli/graph/badge.svg?token=K3PBFvFe60)](https://codecov.io/gh/vhosztafi/rs-cli)
 
 A .NET console application that queries the TfL Road API to display road status information.
 
@@ -179,9 +179,9 @@ To install the git hooks, run one of the installation scripts:
 
 The installation script configures git to use the `.githooks` directory for hooks.
 
-### Pre-Commit Hook
+### Commit-Message Hook
 
-The pre-commit hook validates that commit messages follow the [Conventional Commits](https://www.conventionalcommits.org/) specification.
+The commit-msg hook validates that commit messages follow the [Conventional Commits](https://www.conventionalcommits.org/) specification.
 
 **Format**: `type(scope): subject`
 
