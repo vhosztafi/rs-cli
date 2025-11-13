@@ -19,4 +19,19 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+    <PublishDir>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(TargetFramework)\win-x64\publish</PublishDir>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>true</PublishTrimmed>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
+    <PublishDir>$(MSBuildProjectDirectory)\bin\$(Configuration)\$(TargetFramework)\linux-x64\publish</PublishDir>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>true</PublishTrimmed>
+  </PropertyGroup>
+
 </Project>
