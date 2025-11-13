@@ -1,0 +1,70 @@
+name: Nightly Integration Tests
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+      
+    - name: Run integration tests
+      env:
+        RUN_LIVE_INTEGRATION: '1'
+        TFL_APP_ID: ${{ secrets.TFL_APP_ID }}
+        TFL_APP_KEY: ${{ secrets.TFL_APP_KEY }}
+      run: |
+        dotnet test \
+          --no-build \
+          --configuration Release \
+          --filter "FullyQualifiedName~Integration.Tests" \
+          --collect:"XPlat Code Coverage" \
+          --results-directory:"TestResults" \
+          --logger:"trx;LogFileName=integration-test-results.trx"
+      continue-on-error: true
+      
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: integration-test-results
+        path: TestResults/**/*.trx
+        retention-days: 90
+        
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: integration-coverage-reports
+        path: TestResults/**/coverage.cobertura.xml
+        retention-days: 90
+        
+    - name: Comment on failure
+      if: failure()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '⚠️ Nightly integration tests failed. Please check the workflow run for details.'
+          })
+      continue-on-error: true
