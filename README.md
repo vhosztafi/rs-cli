@@ -72,9 +72,49 @@ dotnet test
 
 Integration tests are opt-in. Set `RUN_LIVE_INTEGRATION=1` along with `TFL_APP_ID` and `TFL_APP_KEY` to run live API tests.
 
+## Configuration
+
+### API Keys
+
+The TfL Road API can be used without authentication, but authenticated requests benefit from higher rate limits (500 requests/minute vs. lower limits for unauthenticated requests).
+
+To use API credentials:
+
+1. **Obtain API keys**: Register for a free TfL API account at [https://api.tfl.gov.uk/](https://api.tfl.gov.uk/) to get your `app_id` and `app_key`.
+
+2. **Set environment variables**:
+   - **Windows (PowerShell)**:
+     ```powershell
+     $env:TFL_APP_ID="your_app_id_here"
+     $env:TFL_APP_KEY="your_app_key_here"
+     ```
+   - **Windows (CMD)**:
+     ```cmd
+     set TFL_APP_ID=your_app_id_here
+     set TFL_APP_KEY=your_app_key_here
+     ```
+   - **Linux/macOS (Bash)**:
+     ```bash
+     export TFL_APP_ID=your_app_id_here
+     export TFL_APP_KEY=your_app_key_here
+     ```
+
+3. **Security note**: Never commit API keys to version control. Use environment variables, secure configuration files, or secret management systems in production environments.
+
+### Base URL
+
+The application defaults to `https://api.tfl.gov.uk` but can be configured via the `TflRoadStatusClient` constructor for testing or custom endpoints.
+
 ## Assumptions
 
-- TfL API credentials (`TFL_APP_ID` and `TFL_APP_KEY`) are optional - the API works without them but with lower rate limits
-- Network connectivity is available to reach `https://api.tfl.gov.uk`
-- Road IDs are case-insensitive (API handles this)
-- The application targets .NET 8.0
+- **API Credentials**: TfL API credentials (`TFL_APP_ID` and `TFL_APP_KEY`) are optional. The API works without them but with lower rate limits.
+
+- **Network Connectivity**: Network connectivity is available to reach `https://api.tfl.gov.uk`. The application requires internet access to query the TfL Road API.
+
+- **Road ID Format**: Road IDs are case-insensitive (the API handles this). Valid road IDs follow TfL's naming conventions (e.g., "A2", "A233").
+
+- **JSON Response Format**: The application expects JSON responses with properties `displayName`, `statusSeverity`, and `statusSeverityDescription` (case-insensitive matching is supported).
+
+- **Runtime**: The application targets .NET 8.0 and requires the .NET 8.0 runtime or SDK to build and run.
+
+- **Single Road Query**: The application queries one road at a time. Multiple road IDs are not supported in a single invocation.
