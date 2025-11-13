@@ -56,7 +56,7 @@ public class CliApplication
                 errors.Add(ex.Message);
                 hasInvalidRoad = true;
             }
-            catch (Exception ex)
+            catch (RoadStatusException ex)
             {
                 var executionTime = DateTime.UtcNow - startTime;
                 _logger.LogError(
@@ -66,7 +66,20 @@ public class CliApplication
                     roadIdString,
                     executionTime.TotalMilliseconds,
                     ex.GetType().Name);
-                errors.Add($"Error retrieving status for {roadIdString}: {ex.Message}");
+                errors.Add(ex.Message);
+                hasInvalidRoad = true;
+            }
+            catch (Exception ex)
+            {
+                var executionTime = DateTime.UtcNow - startTime;
+                _logger.LogError(
+                    ex,
+                    "Unexpected error while fetching road status {CorrelationId} {RoadId} {ExecutionTimeMs}ms {ErrorType}",
+                    correlationId,
+                    roadIdString,
+                    executionTime.TotalMilliseconds,
+                    ex.GetType().Name);
+                errors.Add($"An unexpected error occurred while retrieving status for {roadIdString}: {ex.Message}");
                 hasInvalidRoad = true;
             }
         }

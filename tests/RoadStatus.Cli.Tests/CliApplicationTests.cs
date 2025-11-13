@@ -164,20 +164,44 @@ public class CliApplicationTests
         Assert.Contains("A233 is not a valid road", outputText);
     }
 
+    [Fact]
+    public async Task RunAsync_RoadStatusException_ReturnsExitCodeInvalidRoad()
+    {
+        var mockClient = new MockTflRoadStatusClient(shouldThrowRoadStatusException: true);
+        var formatter = new RoadStatusFormatter();
+        var logger = NullLogger<CliApplication>.Instance;
+        var app = new CliApplication(mockClient, formatter, logger);
+        var output = new StringWriter();
+
+        var exitCode = await app.RunAsync(new[] { "A2" }, false, output);
+
+        Assert.Equal(1, exitCode);
+        var outputText = output.ToString();
+        Assert.Contains("Unable to connect to TfL API", outputText);
+        Assert.Contains("check your internet connection", outputText);
+    }
+
     private sealed class MockTflRoadStatusClient : ITflRoadStatusClient
     {
         private readonly bool _shouldThrowNotFound;
+        private readonly bool _shouldThrowRoadStatusException;
         private readonly HashSet<string> _invalidRoadIds;
 
-        public MockTflRoadStatusClient(bool shouldThrowNotFound = false, string[]? invalidRoadIds = null)
+        public MockTflRoadStatusClient(bool shouldThrowNotFound = false, bool shouldThrowRoadStatusException = false, string[]? invalidRoadIds = null)
         {
             _shouldThrowNotFound = shouldThrowNotFound;
+            _shouldThrowRoadStatusException = shouldThrowRoadStatusException;
             _invalidRoadIds = invalidRoadIds != null ? new HashSet<string>(invalidRoadIds) : new HashSet<string>();
         }
 
         public Task<CoreRoadStatus> GetRoadStatusAsync(RoadId roadId)
         {
             var roadIdString = roadId.ToString();
+            if (_shouldThrowRoadStatusException)
+            {
+                throw new RoadStatusException("Unable to connect to TfL API. Please check your internet connection and try again.");
+            }
+            
             if (_shouldThrowNotFound || _invalidRoadIds.Contains(roadIdString))
             {
                 throw new UnknownRoadException(roadIdString);
