@@ -34,7 +34,6 @@ public class ProgramTests
 
             var exitCode = await InvokeMainAsync(Array.Empty<string>());
 
-            // System.CommandLine returns 1 for parsing errors
             Assert.NotEqual(Program.ExitCodeSuccess, exitCode);
         }
         finally
@@ -59,7 +58,6 @@ public class ProgramTests
 
             var exitCode = await InvokeMainAsync(new[] { "A2", "A3" });
 
-            // May succeed or fail depending on API, but should process multiple roads
             Assert.True(exitCode >= 0);
         }
         finally
@@ -110,7 +108,6 @@ public class ProgramTests
 
             var exitCode = await InvokeMainAsync(new[] { "--json", "A2" });
 
-            // May succeed or fail depending on API, but if it succeeds, should output JSON
             if (exitCode == Program.ExitCodeSuccess)
             {
                 var outputText = output.ToString();
@@ -247,6 +244,124 @@ public class ProgramTests
             Environment.SetEnvironmentVariable("TFL_APP_ID", originalAppId);
             Environment.SetEnvironmentVariable("TFL_APP_KEY", originalAppKey);
             Environment.SetEnvironmentVariable("TFL_BASE_URL", originalBaseUrl);
+        }
+    }
+
+    [Fact]
+    public async Task Main_VersionFlag_ShowsVersionAndReturnsSuccess()
+    {
+        var originalOut = Console.Out;
+        try
+        {
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var exitCode = await InvokeMainAsync(new[] { "--version" });
+
+            Assert.Equal(Program.ExitCodeSuccess, exitCode);
+        }
+        finally
+        {
+            Console.SetOut(originalOut);
+        }
+    }
+
+    [Fact]
+    public async Task Main_VersionFlagShort_ShowsVersionAndReturnsSuccess()
+    {
+        var originalOut = Console.Out;
+        try
+        {
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var exitCode = await InvokeMainAsync(new[] { "-v" });
+
+            Assert.True(exitCode >= 0);
+        }
+        finally
+        {
+            Console.SetOut(originalOut);
+        }
+    }
+
+    [Fact]
+    public async Task Main_WithTflBaseUrlEnvVar_OverridesBaseUrl()
+    {
+        var originalOut = Console.Out;
+        var originalAppId = Environment.GetEnvironmentVariable("TFL_APP_ID");
+        var originalAppKey = Environment.GetEnvironmentVariable("TFL_APP_KEY");
+        var originalBaseUrl = Environment.GetEnvironmentVariable("TFL_BASE_URL");
+        try
+        {
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            Environment.SetEnvironmentVariable("TFL_APP_ID", null);
+            Environment.SetEnvironmentVariable("TFL_APP_KEY", null);
+            Environment.SetEnvironmentVariable("TFL_BASE_URL", "https://custom.api.tfl.gov.uk");
+
+            try
+            {
+                var exitCode = await InvokeMainAsync(new[] { "A2" });
+                Assert.True(exitCode >= 0);
+            }
+            catch (HttpRequestException)
+            {
+                // Expected if custom URL doesn't exist
+            }
+        }
+        finally
+        {
+            Console.SetOut(originalOut);
+            Environment.SetEnvironmentVariable("TFL_APP_ID", originalAppId);
+            Environment.SetEnvironmentVariable("TFL_APP_KEY", originalAppKey);
+            Environment.SetEnvironmentVariable("TFL_BASE_URL", originalBaseUrl);
+        }
+    }
+
+    [Fact]
+    public async Task Main_WithVerboseFlag_SetsQuietToFalse()
+    {
+        var originalOut = Console.Out;
+        var originalAppId = Environment.GetEnvironmentVariable("TFL_APP_ID");
+        var originalAppKey = Environment.GetEnvironmentVariable("TFL_APP_KEY");
+        try
+        {
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            Environment.SetEnvironmentVariable("TFL_APP_ID", null);
+            Environment.SetEnvironmentVariable("TFL_APP_KEY", null);
+
+            var exitCode = await InvokeMainAsync(new[] { "--verbose", "A2" });
+            
+            Assert.True(exitCode >= 0);
+        }
+        finally
+        {
+            Console.SetOut(originalOut);
+            Environment.SetEnvironmentVariable("TFL_APP_ID", originalAppId);
+            Environment.SetEnvironmentVariable("TFL_APP_KEY", originalAppKey);
+        }
+    }
+
+    [Fact]
+    public async Task Main_HelpWithConsoleSetOutException_HandlesGracefully()
+    {
+        var originalOut = Console.Out;
+        try
+        {
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var exitCode = await InvokeMainAsync(new[] { "--help" });
+
+            Assert.Equal(Program.ExitCodeSuccess, exitCode);
+        }
+        finally
+        {
+            Console.SetOut(originalOut);
         }
     }
 

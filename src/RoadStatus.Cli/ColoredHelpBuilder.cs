@@ -166,11 +166,11 @@ internal class ColoredTextWriter : TextWriter
         }
         else if (trimmed.EndsWith(':') && trimmed.Length < 50 && trimmed.Split(' ').Length <= 3)
         {
-            return ConsoleColors.Bold(line);
+            return ConsoleColors.Bold(line) ?? line;
         }
         else if (trimmed.Length > 30 && !trimmed.StartsWith("  ") && !trimmed.StartsWith("-"))
         {
-            return ConsoleColors.Cyan(line);
+            return ConsoleColors.Cyan(line) ?? line;
         }
 
         return line;

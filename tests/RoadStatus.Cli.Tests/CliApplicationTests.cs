@@ -181,22 +181,46 @@ public class CliApplicationTests
         Assert.Contains("check your internet connection", outputText);
     }
 
+    [Fact]
+    public async Task RunAsync_GenericException_ReturnsExitCodeInvalidRoad()
+    {
+        var mockClient = new MockTflRoadStatusClient(shouldThrowGenericException: true);
+        var formatter = new RoadStatusFormatter();
+        var logger = NullLogger<CliApplication>.Instance;
+        var app = new CliApplication(mockClient, formatter, logger);
+        var output = new StringWriter();
+
+        var exitCode = await app.RunAsync(new[] { "A2" }, false, output);
+
+        Assert.Equal(1, exitCode);
+        var outputText = output.ToString();
+        Assert.Contains("An unexpected error occurred while retrieving status for A2", outputText);
+        Assert.Contains("Generic exception message", outputText);
+    }
+
     private sealed class MockTflRoadStatusClient : ITflRoadStatusClient
     {
         private readonly bool _shouldThrowNotFound;
         private readonly bool _shouldThrowRoadStatusException;
+        private readonly bool _shouldThrowGenericException;
         private readonly HashSet<string> _invalidRoadIds;
 
-        public MockTflRoadStatusClient(bool shouldThrowNotFound = false, bool shouldThrowRoadStatusException = false, string[]? invalidRoadIds = null)
+        public MockTflRoadStatusClient(bool shouldThrowNotFound = false, bool shouldThrowRoadStatusException = false, bool shouldThrowGenericException = false, string[]? invalidRoadIds = null)
         {
             _shouldThrowNotFound = shouldThrowNotFound;
             _shouldThrowRoadStatusException = shouldThrowRoadStatusException;
+            _shouldThrowGenericException = shouldThrowGenericException;
             _invalidRoadIds = invalidRoadIds != null ? new HashSet<string>(invalidRoadIds) : new HashSet<string>();
         }
 
         public Task<CoreRoadStatus> GetRoadStatusAsync(RoadId roadId)
         {
             var roadIdString = roadId.ToString();
+            if (_shouldThrowGenericException)
+            {
+                throw new InvalidOperationException("Generic exception message");
+            }
+            
             if (_shouldThrowRoadStatusException)
             {
                 throw new RoadStatusException("Unable to connect to TfL API. Please check your internet connection and try again.");

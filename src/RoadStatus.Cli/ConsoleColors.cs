@@ -6,11 +6,6 @@ internal static class ConsoleColors
 
     private static bool ShouldEnableColors()
     {
-        if (Console.IsOutputRedirected)
-        {
-            return false;
-        }
-
         var noColor = Environment.GetEnvironmentVariable("NO_COLOR");
         if (!string.IsNullOrWhiteSpace(noColor))
         {
@@ -20,13 +15,42 @@ internal static class ConsoleColors
         return true;
     }
 
-    public static string Cyan(string text) => ColorsEnabled ? $"\u001b[36m{text}\u001b[0m" : text;
+    public static string? Cyan(string? text)
+    {
+        if (text == null) return null;
+        if (text.Length == 0) return text;
+        return ApplyColor(text, "\u001b[36m");
+    }
 
-    public static string Yellow(string text) => ColorsEnabled ? $"\u001b[33m{text}\u001b[0m" : text;
+    public static string? Yellow(string? text)
+    {
+        if (text == null) return null;
+        if (text.Length == 0) return text;
+        return ApplyColor(text, "\u001b[33m");
+    }
 
-    public static string Green(string text) => ColorsEnabled ? $"\u001b[32m{text}\u001b[0m" : text;
+    public static string? Green(string? text)
+    {
+        if (text == null) return null;
+        if (text.Length == 0) return text;
+        return ApplyColor(text, "\u001b[32m");
+    }
 
-    public static string Bold(string text) => ColorsEnabled ? $"\u001b[1m{text}\u001b[0m" : text;
+    public static string? Bold(string? text)
+    {
+        if (text == null) return null;
+        if (text.Length == 0) return text;
+        return ApplyColor(text, "\u001b[1m");
+    }
 
     public static string Reset => ColorsEnabled ? "\u001b[0m" : string.Empty;
+
+    private static string ApplyColor(string text, string ansiCode)
+    {
+        if (ColorsEnabled)
+        {
+            return $"{ansiCode}{text}\u001b[0m";
+        }
+        return text;
+    }
 }

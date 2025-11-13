@@ -299,6 +299,25 @@ public class TflRoadStatusClientTests
     }
 
     [Fact]
+    public async Task GetRoadStatusAsync_CancelledRequest_ThrowsRoadStatusException()
+    {
+        var handler = new TestHttpMessageHandlerWithException(
+            new TaskCanceledException("Request was cancelled"));
+        var httpClient = new HttpClient(handler);
+        var client = new TflRoadStatusClient(httpClient);
+
+        var roadId = RoadId.Parse("A2");
+
+        var exception = await Assert.ThrowsAsync<RoadStatusException>(
+            () => client.GetRoadStatusAsync(roadId));
+
+        Assert.Contains("Request to TfL API was cancelled", exception.Message);
+        Assert.Contains("Please try again", exception.Message);
+        Assert.NotNull(exception.InnerException);
+        Assert.IsType<TaskCanceledException>(exception.InnerException);
+    }
+
+    [Fact]
     public async Task GetRoadStatusAsync_JsonParseError_ThrowsRoadStatusException()
     {
         var handler = new TestHttpMessageHandler(HttpStatusCode.OK, "invalid json {");
