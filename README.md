@@ -9,6 +9,34 @@ A .NET console application that queries the TfL Road API to display road status 
 
 This application queries the Transport for London (TfL) Road API to retrieve and display the status of major roads. Given a valid road ID, it displays the road's display name, status severity, and status description. For invalid road IDs, it returns an informative error message and exits with a non-zero error code.
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Build](#build)
+- [Development Commands](#development-commands)
+- [Run](#run)
+- [Examples](#examples)
+- [Tests](#tests)
+  - [Running Tests](#running-tests)
+  - [Code Coverage](#code-coverage)
+  - [Integration Tests](#integration-tests)
+  - [Behavior-Driven Development (BDD)](#behavior-driven-development-bdd)
+- [Git Hooks](#git-hooks)
+  - [Installing Git Hooks](#installing-git-hooks)
+  - [Commit-Message Hook](#commit-message-hook)
+  - [Pre-Push Hook](#pre-push-hook)
+  - [Uninstalling Git Hooks](#uninstalling-git-hooks)
+- [Continuous Integration](#continuous-integration)
+  - [GitHub Actions](#github-actions)
+  - [Azure DevOps](#azure-devops)
+- [Configuration](#configuration)
+  - [API Keys](#api-keys)
+  - [Base URL](#base-url)
+  - [Configuration Precedence Example](#configuration-precedence-example)
+  - [Security Note](#security-note)
+- [Coding Style](#coding-style)
+- [Assumptions](#assumptions)
+
 ## Build
 
 ```bash
