@@ -1,4 +1,6 @@
-﻿using RoadStatus.Core;
+﻿using System.CommandLine;
+using System.CommandLine.Invocation;
+using RoadStatus.Core;
 
 namespace RoadStatus.Cli;
 
@@ -10,15 +12,38 @@ internal static class Program
 
     private static async Task<int> Main(string[] args)
     {
-        var parser = new CliArgumentParser();
-        var httpClientFactory = new HttpClientFactory();
-        var httpClient = httpClientFactory.Create();
-        var appId = Environment.GetEnvironmentVariable("TFL_APP_ID");
-        var appKey = Environment.GetEnvironmentVariable("TFL_APP_KEY");
-        var client = new TflRoadStatusClient(httpClient, appId: appId, appKey: appKey);
-        var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(parser, client, formatter);
+        var roadIdsArgument = new Argument<string[]>("road-ids")
+        {
+            Arity = ArgumentArity.OneOrMore,
+            Description = "One or more road IDs to check (e.g., A2, A3)"
+        };
 
-        return await app.RunAsync(args, Console.Out);
+        var jsonOption = new Option<bool>("--json", "Output results in JSON format");
+        jsonOption.AddAlias("-j");
+
+        var rootCommand = new RootCommand("Query the TfL Road API to display road status information.")
+        {
+            roadIdsArgument,
+            jsonOption
+        };
+
+        rootCommand.SetHandler(async (InvocationContext context) =>
+        {
+            var roadIds = context.ParseResult.GetValueForArgument(roadIdsArgument);
+            var json = context.ParseResult.GetValueForOption(jsonOption);
+
+            var httpClientFactory = new HttpClientFactory();
+            var httpClient = httpClientFactory.Create();
+            var appId = Environment.GetEnvironmentVariable("TFL_APP_ID");
+            var appKey = Environment.GetEnvironmentVariable("TFL_APP_KEY");
+            var client = new TflRoadStatusClient(httpClient, appId: appId, appKey: appKey);
+            var formatter = new RoadStatusFormatter();
+            var app = new CliApplication(client, formatter);
+
+            var exitCode = await app.RunAsync(roadIds, json, Console.Out);
+            context.ExitCode = exitCode;
+        });
+
+        return await rootCommand.InvokeAsync(args);
     }
 }

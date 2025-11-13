@@ -1,4 +1,3 @@
-using System.Reflection;
 using RoadStatus.Core;
 using CoreRoadStatus = RoadStatus.Core.RoadStatus;
 using Xunit;
@@ -8,45 +7,28 @@ namespace RoadStatus.Cli.Tests;
 public class CliApplicationTests
 {
     [Fact]
-    public async Task RunAsync_NoArguments_ReturnsExitCodeInvalidUsage()
+    public async Task RunAsync_NoRoadIds_ReturnsExitCodeInvalidUsage()
     {
-        var parser = new CliArgumentParser();
         var mockClient = new MockTflRoadStatusClient();
         var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(parser, mockClient, formatter);
+        var app = new CliApplication(mockClient, formatter);
         var output = new StringWriter();
 
-        var exitCode = await app.RunAsync(Array.Empty<string>(), output);
+        var exitCode = await app.RunAsync(Array.Empty<string>(), false, output);
 
         Assert.Equal(2, exitCode);
-        Assert.Contains("No arguments provided", output.ToString());
-    }
-
-    [Fact]
-    public async Task RunAsync_TooManyArguments_ReturnsExitCodeInvalidUsage()
-    {
-        var parser = new CliArgumentParser();
-        var mockClient = new MockTflRoadStatusClient();
-        var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(parser, mockClient, formatter);
-        var output = new StringWriter();
-
-        var exitCode = await app.RunAsync(new[] { "A2", "A233" }, output);
-
-        Assert.Equal(2, exitCode);
-        Assert.Contains("Too many arguments provided", output.ToString());
+        Assert.Contains("At least one road ID is required", output.ToString());
     }
 
     [Fact]
     public async Task RunAsync_ValidRoad_ReturnsExitCodeSuccess()
     {
-        var parser = new CliArgumentParser();
         var mockClient = new MockTflRoadStatusClient();
         var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(parser, mockClient, formatter);
+        var app = new CliApplication(mockClient, formatter);
         var output = new StringWriter();
 
-        var exitCode = await app.RunAsync(["A2"], output);
+        var exitCode = await app.RunAsync(["A2"], false, output);
 
         Assert.Equal(0, exitCode);
         var outputText = output.ToString();
@@ -58,130 +40,143 @@ public class CliApplicationTests
     [Fact]
     public async Task RunAsync_InvalidRoad_ReturnsExitCodeInvalidRoad()
     {
-        var parser = new CliArgumentParser();
         var mockClient = new MockTflRoadStatusClient(shouldThrowNotFound: true);
         var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(parser, mockClient, formatter);
+        var app = new CliApplication(mockClient, formatter);
         var output = new StringWriter();
 
-        var exitCode = await app.RunAsync(new[] { "A233" }, output);
+        var exitCode = await app.RunAsync(new[] { "A233" }, false, output);
 
         Assert.Equal(1, exitCode);
         Assert.Contains("A233 is not a valid road", output.ToString());
     }
 
     [Fact]
-    public async Task RunAsync_HelpFlag_ShowsHelpAndReturnsSuccess()
+    public async Task RunAsync_MultipleValidRoads_ReturnsExitCodeSuccess()
     {
-        var parser = new CliArgumentParser();
         var mockClient = new MockTflRoadStatusClient();
         var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(parser, mockClient, formatter);
+        var app = new CliApplication(mockClient, formatter);
         var output = new StringWriter();
 
-        var exitCode = await app.RunAsync(new[] { "--help" }, output);
+        var exitCode = await app.RunAsync(new[] { "A2", "A3" }, false, output);
 
         Assert.Equal(0, exitCode);
         var outputText = output.ToString();
-        Assert.Contains("Usage:", outputText);
-        Assert.Contains("RoadStatus <road-id>", outputText);
+        Assert.Contains("The status of the A2 is as follows", outputText);
+        Assert.Contains("The status of the A3 is as follows", outputText);
     }
 
     [Fact]
-    public async Task RunAsync_VersionFlag_ShowsVersionAndReturnsSuccess()
+    public async Task RunAsync_MultipleRoads_OneInvalid_ReturnsExitCodeInvalidRoad()
     {
-        var parser = new CliArgumentParser();
-        var mockClient = new MockTflRoadStatusClient();
+        var mockClient = new MockTflRoadStatusClient(shouldThrowNotFound: true);
         var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(parser, mockClient, formatter);
+        var app = new CliApplication(mockClient, formatter);
         var output = new StringWriter();
 
-        var exitCode = await app.RunAsync(["--version"], output);
+        var exitCode = await app.RunAsync(new[] { "A2", "A233" }, false, output);
+
+        Assert.Equal(1, exitCode);
+        var outputText = output.ToString();
+        Assert.Contains("A233 is not a valid road", outputText);
+    }
+
+    [Fact]
+    public async Task RunAsync_ValidRoad_JsonOutput_ReturnsJson()
+    {
+        var mockClient = new MockTflRoadStatusClient();
+        var formatter = new RoadStatusFormatter();
+        var app = new CliApplication(mockClient, formatter);
+        var output = new StringWriter();
+
+        var exitCode = await app.RunAsync(["A2"], true, output);
 
         Assert.Equal(0, exitCode);
         var outputText = output.ToString();
-        Assert.Contains("RoadStatus CLI", outputText);
+        Assert.Contains("\"displayName\":\"A2\"", outputText);
+        Assert.Contains("\"statusSeverity\":\"Good\"", outputText);
+        Assert.Contains("\"statusDescription\":\"No Exceptional Delays\"", outputText);
+        Assert.StartsWith("[", outputText);
+        var trimmed = outputText.TrimEnd();
+        Assert.EndsWith("]", trimmed);
     }
 
     [Fact]
-    public async Task RunAsync_VersionFlag_WithNullVersion_ShowsVersionWithZero()
+    public async Task RunAsync_MultipleValidRoads_JsonOutput_ReturnsJsonArray()
     {
-        var parser = new CliArgumentParser();
         var mockClient = new MockTflRoadStatusClient();
         var formatter = new RoadStatusFormatter();
-        var app = new TestableCliApplicationWithNullVersion(parser, mockClient, formatter);
+        var app = new CliApplication(mockClient, formatter);
         var output = new StringWriter();
 
-        var exitCode = await app.RunAsync(["--version"], output);
+        var exitCode = await app.RunAsync(new[] { "A2", "A3" }, true, output);
 
         Assert.Equal(0, exitCode);
         var outputText = output.ToString();
-        Assert.Contains("RoadStatus CLI", outputText);
-        Assert.Contains("0", outputText);
-    }
-
-    private sealed class TestableCliApplicationWithNullVersion : CliApplication
-    {
-        public TestableCliApplicationWithNullVersion(CliArgumentParser parser, ITflRoadStatusClient client, RoadStatusFormatter formatter)
-            : base(parser, client, formatter)
-        {
-        }
-
-        protected override Version? GetVersion()
-        {
-            return null;
-        }
+        Assert.StartsWith("[", outputText);
+        var trimmed = outputText.TrimEnd();
+        Assert.EndsWith("]", trimmed);
+        Assert.Contains("\"displayName\":\"A2\"", outputText);
+        Assert.Contains("\"displayName\":\"A3\"", outputText);
     }
 
     [Fact]
-    public async Task RunAsync_NullRoadId_ReturnsExitCodeInvalidUsage()
+    public async Task RunAsync_MultipleRoads_MixedValidInvalid_ShowsBothResultsAndErrors()
     {
-        var resultType = typeof(CliArgumentParseResult);
-        var constructor = resultType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)[0];
-        var parseResultWithNullRoadId = (CliArgumentParseResult)constructor.Invoke(new object?[] { true, false, false, null, null });
-        
-        var mockParser = new MockParserWithNullRoadId(parseResultWithNullRoadId);
-        var mockClient = new MockTflRoadStatusClient();
+        var mockClient = new MockTflRoadStatusClient(invalidRoadIds: new[] { "A233" });
         var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(mockParser, mockClient, formatter);
+        var app = new CliApplication(mockClient, formatter);
         var output = new StringWriter();
 
-        var exitCode = await app.RunAsync(new[] { "A2" }, output);
+        var exitCode = await app.RunAsync(new[] { "A2", "A233" }, false, output);
 
-        Assert.Equal(2, exitCode);
-        Assert.Contains("Road ID is required.", output.ToString());
+        Assert.Equal(1, exitCode);
+        var outputText = output.ToString();
+        Assert.Contains("The status of the A2 is as follows", outputText);
+        Assert.Contains("A233 is not a valid road", outputText);
     }
 
-    private sealed class MockParserWithNullRoadId : CliArgumentParser
+    [Fact]
+    public async Task RunAsync_AllInvalidRoads_JsonOutput_ReturnsEmptyArray()
     {
-        private readonly CliArgumentParseResult _result;
+        var mockClient = new MockTflRoadStatusClient(shouldThrowNotFound: true);
+        var formatter = new RoadStatusFormatter();
+        var app = new CliApplication(mockClient, formatter);
+        var output = new StringWriter();
 
-        public MockParserWithNullRoadId(CliArgumentParseResult result)
-        {
-            _result = result;
-        }
+        var exitCode = await app.RunAsync(new[] { "A233" }, true, output);
 
-        public override CliArgumentParseResult Parse(string[] args) => _result;
+        Assert.Equal(1, exitCode);
+        var outputText = output.ToString();
+        Assert.StartsWith("[", outputText.Trim());
+        Assert.Contains("]", outputText);
+        Assert.Contains("A233 is not a valid road", outputText);
     }
 
     private sealed class MockTflRoadStatusClient : ITflRoadStatusClient
     {
         private readonly bool _shouldThrowNotFound;
+        private readonly HashSet<string> _invalidRoadIds;
 
-        public MockTflRoadStatusClient(bool shouldThrowNotFound = false)
+        public MockTflRoadStatusClient(bool shouldThrowNotFound = false, string[]? invalidRoadIds = null)
         {
             _shouldThrowNotFound = shouldThrowNotFound;
+            _invalidRoadIds = invalidRoadIds != null ? new HashSet<string>(invalidRoadIds) : new HashSet<string>();
         }
 
         public Task<CoreRoadStatus> GetRoadStatusAsync(RoadId roadId)
         {
-            if (_shouldThrowNotFound)
+            var roadIdString = roadId.ToString();
+            if (_shouldThrowNotFound || _invalidRoadIds.Contains(roadIdString))
             {
-                throw new UnknownRoadException(roadId.ToString());
+                throw new UnknownRoadException(roadIdString);
             }
 
+            // Return different statuses for different roads to test multiple roads
+            var displayName = roadIdString;
             return Task.FromResult(new CoreRoadStatus(
-                "A2",
+                displayName,
                 "Good",
                 "No Exceptional Delays"));
         }

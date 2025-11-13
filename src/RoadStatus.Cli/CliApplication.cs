@@ -4,76 +4,61 @@ namespace RoadStatus.Cli;
 
 public class CliApplication
 {
-    private readonly CliArgumentParser _parser;
     private readonly ITflRoadStatusClient _client;
     private readonly RoadStatusFormatter _formatter;
 
-    public CliApplication(CliArgumentParser parser, ITflRoadStatusClient client, RoadStatusFormatter formatter)
+    public CliApplication(ITflRoadStatusClient client, RoadStatusFormatter formatter)
     {
-        _parser = parser;
         _client = client;
         _formatter = formatter;
     }
 
-    public async Task<int> RunAsync(string[] args, TextWriter output)
+    public async Task<int> RunAsync(string[] roadIds, bool jsonOutput, TextWriter output)
     {
-        var parseResult = _parser.Parse(args);
-
-        if (parseResult.ShouldShowHelp)
+        if (roadIds.Length == 0)
         {
-            await output.WriteLineAsync("Usage: RoadStatus <road-id>");
-            await output.WriteLineAsync("");
-            await output.WriteLineAsync("Arguments:");
-            await output.WriteLineAsync("  <road-id>    The ID of the road to check (e.g., A2)");
-            await output.WriteLineAsync("");
-            await output.WriteLineAsync("Options:");
-            await output.WriteLineAsync("  --help, -h, /?    Show this help message");
-            await output.WriteLineAsync("  --version, -v     Show version information");
-            await output.WriteLineAsync("");
-            await output.WriteLineAsync("Environment Variables:");
-            await output.WriteLineAsync("  TFL_APP_ID        TfL API application ID (optional)");
-            await output.WriteLineAsync("  TFL_APP_KEY       TfL API application key (optional)");
-            return Program.ExitCodeSuccess;
-        }
-
-        if (parseResult.ShouldShowVersion)
-        {
-            var version = GetVersion();
-            await output.WriteLineAsync($"RoadStatus CLI {version?.Major}.{version?.Minor}.{version?.Build ?? 0}");
-            return Program.ExitCodeSuccess;
-        }
-
-        if (!parseResult.IsSuccess)
-        {
-            await output.WriteLineAsync(parseResult.ErrorMessage);
+            await output.WriteLineAsync("At least one road ID is required.");
             return Program.ExitCodeInvalidUsage;
         }
 
-        if (parseResult.RoadId == null)
+        var roadStatuses = new List<Core.RoadStatus>();
+        var errors = new List<string>();
+        var hasInvalidRoad = false;
+
+        foreach (var roadIdString in roadIds)
         {
-            await output.WriteLineAsync("Road ID is required.");
-            return Program.ExitCodeInvalidUsage;
+            try
+            {
+                var roadId = RoadId.Parse(roadIdString);
+                var roadStatus = await _client.GetRoadStatusAsync(roadId);
+                roadStatuses.Add(roadStatus);
+            }
+            catch (UnknownRoadException ex)
+            {
+                errors.Add(ex.Message);
+                hasInvalidRoad = true;
+            }
         }
 
-        try
+        if (jsonOutput)
         {
-            var roadId = RoadId.Parse(parseResult.RoadId);
-            var roadStatus = await _client.GetRoadStatusAsync(roadId);
-
-            var formattedOutput = _formatter.Format(roadStatus);
-            await output.WriteAsync(formattedOutput);
-
-            return Program.ExitCodeSuccess;
+            var jsonOutputText = _formatter.FormatJson(roadStatuses);
+            await output.WriteLineAsync(jsonOutputText);
         }
-        catch (UnknownRoadException ex)
+        else
         {
-            await output.WriteLineAsync(ex.Message);
-            return Program.ExitCodeInvalidRoad;
+            foreach (var roadStatus in roadStatuses)
+            {
+                var formattedOutput = _formatter.Format(roadStatus);
+                await output.WriteAsync(formattedOutput);
+            }
         }
-    }
 
-    protected virtual Version? GetVersion()
-    {
-        return typeof(Program).Assembly.GetName().Version;
+        foreach (var error in errors)
+        {
+            await output.WriteLineAsync(error);
+        }
+
+        return hasInvalidRoad ? Program.ExitCodeInvalidRoad : Program.ExitCodeSuccess;
     }
 }
