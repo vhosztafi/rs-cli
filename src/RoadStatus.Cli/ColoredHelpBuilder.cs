@@ -8,6 +8,29 @@ internal class ColoredTextWriter : TextWriter
     private readonly StringBuilder _lineBuffer = new();
     private readonly bool _enableColors;
 
+    internal static IReadOnlyList<string> KnownOptions { get; private set; } =
+    [
+        "-j", "--json", "--version", "-?", "-h", "--help", "-V", "--verbose", "-q", "--quiet"
+    ];
+
+    internal static void SetKnownOptions(IEnumerable<string>? options)
+    {
+        if (options == null)
+        {
+            return;
+        }
+
+        var list = options.Where(o => !string.IsNullOrWhiteSpace(o))
+            .Select(o => o.Trim())
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+
+        if (list.Length > 0)
+        {
+            KnownOptions = list;
+        }
+    }
+
     public ColoredTextWriter(TextWriter innerWriter, bool enableColors = true)
     {
         _innerWriter = innerWriter;
@@ -92,7 +115,6 @@ internal class ColoredTextWriter : TextWriter
         var trimmed = line.TrimStart();
         var leadingSpaces = line.Substring(0, line.Length - trimmed.Length);
 
-        var knownOptions = new[] { "-j", "--json", "--version", "-?", "-h", "--help" };
         var coloredLine = new StringBuilder();
         coloredLine.Append(leadingSpaces);
         
@@ -104,7 +126,7 @@ internal class ColoredTextWriter : TextWriter
         {
             var bestMatch = (option: "", index: -1, length: 0);
             
-            foreach (var option in knownOptions)
+            foreach (var option in KnownOptions)
             {
                 var index = remaining.IndexOf(option, lastIndex, StringComparison.Ordinal);
                 if (index >= 0 && (index == 0 || !char.IsLetterOrDigit(remaining[index - 1])) && 

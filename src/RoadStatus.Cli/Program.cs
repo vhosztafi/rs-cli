@@ -18,6 +18,43 @@ internal static class Program
         var isHelpRequested = args.Length > 0 && (args[0] == "--help" || args[0] == "-h" || args[0] == "-?" || args[0] == "/?");
         var isVersionRequested = args.Length > 0 && (args[0] == "--version" || args[0] == "-v");
 
+        var roadIdsArgument = new Argument<string[]>("road-ids")
+        {
+            Arity = ArgumentArity.OneOrMore,
+            Description = "One or more road IDs to check (e.g., A2, A3)"
+        };
+
+        var jsonOption = new Option<bool>("--json", "Output results in JSON format");
+        jsonOption.AddAlias("-j");
+
+        var verboseOption = new Option<bool>("--verbose", "Enable verbose (Debug) logging");
+        verboseOption.AddAlias("-V");
+
+        var quietOption = new Option<bool>("--quiet", "Enable quiet mode (Error-level logging only, default behavior)");
+        quietOption.AddAlias("-q");
+
+        var rootCommand = new RootCommand("Query the TfL Road API to display road status information.")
+        {
+            roadIdsArgument,
+            jsonOption,
+            verboseOption,
+            quietOption
+        };
+
+        try
+        {
+            var derivedKnown = rootCommand.Options
+                .SelectMany(o => o.Aliases)
+                .Concat(new[] { "-h", "--help", "-?", "--version" })
+                .Distinct(StringComparer.Ordinal)
+                .ToArray();
+            ColoredTextWriter.SetKnownOptions(derivedKnown);
+        }
+        catch
+        {
+            // ignored – fall back to defaults inside ColoredTextWriter
+        }
+
         if (isHelpRequested || isVersionRequested)
         {
             var originalOut = Console.Out;
@@ -58,29 +95,6 @@ internal static class Program
         {
             tflApiOptions.BaseUrl = envBaseUrl;
         }
-
-        var roadIdsArgument = new Argument<string[]>("road-ids")
-        {
-            Arity = ArgumentArity.OneOrMore,
-            Description = "One or more road IDs to check (e.g., A2, A3)"
-        };
-
-        var jsonOption = new Option<bool>("--json", "Output results in JSON format");
-        jsonOption.AddAlias("-j");
-
-        var verboseOption = new Option<bool>("--verbose", "Enable verbose (Debug) logging");
-        verboseOption.AddAlias("-V");
-
-        var quietOption = new Option<bool>("--quiet", "Enable quiet mode (Error-level logging only, default behavior)");
-        quietOption.AddAlias("-q");
-
-        var rootCommand = new RootCommand("Query the TfL Road API to display road status information.")
-        {
-            roadIdsArgument,
-            jsonOption,
-            verboseOption,
-            quietOption
-        };
 
         rootCommand.SetHandler(async (InvocationContext context) =>
         {
