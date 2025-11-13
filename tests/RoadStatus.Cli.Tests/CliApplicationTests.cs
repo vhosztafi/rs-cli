@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging.Abstractions;
 using RoadStatus.Core;
 using CoreRoadStatus = RoadStatus.Core.RoadStatus;
 using Xunit;
@@ -11,7 +12,8 @@ public class CliApplicationTests
     {
         var mockClient = new MockTflRoadStatusClient();
         var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(mockClient, formatter);
+        var logger = NullLogger<CliApplication>.Instance;
+        var app = new CliApplication(mockClient, formatter, logger);
         var output = new StringWriter();
 
         var exitCode = await app.RunAsync(Array.Empty<string>(), false, output);
@@ -25,7 +27,8 @@ public class CliApplicationTests
     {
         var mockClient = new MockTflRoadStatusClient();
         var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(mockClient, formatter);
+        var logger = NullLogger<CliApplication>.Instance;
+        var app = new CliApplication(mockClient, formatter, logger);
         var output = new StringWriter();
 
         var exitCode = await app.RunAsync(["A2"], false, output);
@@ -42,7 +45,8 @@ public class CliApplicationTests
     {
         var mockClient = new MockTflRoadStatusClient(shouldThrowNotFound: true);
         var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(mockClient, formatter);
+        var logger = NullLogger<CliApplication>.Instance;
+        var app = new CliApplication(mockClient, formatter, logger);
         var output = new StringWriter();
 
         var exitCode = await app.RunAsync(new[] { "A233" }, false, output);
@@ -56,7 +60,8 @@ public class CliApplicationTests
     {
         var mockClient = new MockTflRoadStatusClient();
         var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(mockClient, formatter);
+        var logger = NullLogger<CliApplication>.Instance;
+        var app = new CliApplication(mockClient, formatter, logger);
         var output = new StringWriter();
 
         var exitCode = await app.RunAsync(new[] { "A2", "A3" }, false, output);
@@ -72,7 +77,8 @@ public class CliApplicationTests
     {
         var mockClient = new MockTflRoadStatusClient(shouldThrowNotFound: true);
         var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(mockClient, formatter);
+        var logger = NullLogger<CliApplication>.Instance;
+        var app = new CliApplication(mockClient, formatter, logger);
         var output = new StringWriter();
 
         var exitCode = await app.RunAsync(new[] { "A2", "A233" }, false, output);
@@ -87,7 +93,8 @@ public class CliApplicationTests
     {
         var mockClient = new MockTflRoadStatusClient();
         var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(mockClient, formatter);
+        var logger = NullLogger<CliApplication>.Instance;
+        var app = new CliApplication(mockClient, formatter, logger);
         var output = new StringWriter();
 
         var exitCode = await app.RunAsync(["A2"], true, output);
@@ -107,7 +114,8 @@ public class CliApplicationTests
     {
         var mockClient = new MockTflRoadStatusClient();
         var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(mockClient, formatter);
+        var logger = NullLogger<CliApplication>.Instance;
+        var app = new CliApplication(mockClient, formatter, logger);
         var output = new StringWriter();
 
         var exitCode = await app.RunAsync(new[] { "A2", "A3" }, true, output);
@@ -126,7 +134,8 @@ public class CliApplicationTests
     {
         var mockClient = new MockTflRoadStatusClient(invalidRoadIds: new[] { "A233" });
         var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(mockClient, formatter);
+        var logger = NullLogger<CliApplication>.Instance;
+        var app = new CliApplication(mockClient, formatter, logger);
         var output = new StringWriter();
 
         var exitCode = await app.RunAsync(new[] { "A2", "A233" }, false, output);
@@ -142,7 +151,8 @@ public class CliApplicationTests
     {
         var mockClient = new MockTflRoadStatusClient(shouldThrowNotFound: true);
         var formatter = new RoadStatusFormatter();
-        var app = new CliApplication(mockClient, formatter);
+        var logger = NullLogger<CliApplication>.Instance;
+        var app = new CliApplication(mockClient, formatter, logger);
         var output = new StringWriter();
 
         var exitCode = await app.RunAsync(new[] { "A233" }, true, output);
