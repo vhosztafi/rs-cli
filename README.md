@@ -159,19 +159,85 @@ The coverage format (Cobertura XML) matches what is generated locally, ensuring 
 
 Integration tests are opt-in. Set `RUN_LIVE_INTEGRATION=1` along with `TFL_APP_ID` and `TFL_APP_KEY` to run live API tests.
 
+## Git Hooks
+
+The project includes git hooks to enforce code quality and commit message standards, similar to husky in Node.js projects.
+
+### Installing Git Hooks
+
+To install the git hooks, run one of the installation scripts:
+
+- **Windows (PowerShell)**:
+  ```powershell
+  .\scripts\install-hooks.ps1
+  ```
+
+- **Linux/macOS (Bash)**:
+  ```bash
+  ./scripts/install-hooks.sh
+  ```
+
+The installation script configures git to use the `.githooks` directory for hooks.
+
+### Pre-Commit Hook
+
+The pre-commit hook validates that commit messages follow the [Conventional Commits](https://www.conventionalcommits.org/) specification.
+
+**Format**: `type(scope): subject`
+
+**Allowed types**: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`, `ci`, `build`, `revert`
+
+**Examples**:
+- `feat: add new feature`
+- `fix(core): resolve bug in parsing`
+- `docs: update README`
+- `chore: update dependencies`
+
+Merge commits and revert commits are automatically allowed.
+
+### Pre-Push Hook
+
+The pre-push hook runs unit tests before allowing a push to proceed. This ensures that:
+- The project builds successfully
+- All unit tests pass (integration tests are excluded)
+
+If tests fail, the push is aborted with a clear error message.
+
+### Uninstalling Git Hooks
+
+To uninstall the git hooks:
+
+```bash
+git config --unset core.hooksPath
+```
+
 ## Continuous Integration
 
 The project includes CI pipelines for both GitHub Actions and Azure DevOps:
 
 ### GitHub Actions
 
-The GitHub Actions pipeline (`.github/workflows/ci.yml`) runs on push and pull requests and:
+The project includes two GitHub Actions workflows:
+
+#### CI Workflow
+
+The CI workflow (`.github/workflows/ci.yml`) runs on push and pull requests and:
 - Builds the solution
-- Runs all tests with code coverage collection
+- Runs unit tests (integration tests excluded) with code coverage collection
 - Uploads coverage reports to Codecov (if configured)
 - Uploads coverage and test result artifacts
 
 The pipeline runs on Ubuntu latest with .NET 8.0.
+
+#### Nightly Integration Tests
+
+The nightly integration tests workflow (`.github/workflows/nightly-integration-tests.yml`) runs daily at 2 AM UTC and:
+- Runs integration tests against the real TfL API
+- Requires `TFL_APP_ID` and `TFL_APP_KEY` GitHub secrets to be configured
+- Uploads test results and coverage reports
+- Can also be triggered manually via workflow_dispatch
+
+This workflow ensures that integration with the TfL API continues to work correctly over time.
 
 ### Azure DevOps
 
