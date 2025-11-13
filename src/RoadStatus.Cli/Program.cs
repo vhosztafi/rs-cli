@@ -12,6 +12,22 @@ internal static class Program
 
     private static async Task<int> Main(string[] args)
     {
+        var isHelpRequested = args.Length > 0 && (args[0] == "--help" || args[0] == "-h" || args[0] == "-?" || args[0] == "/?");
+        var isVersionRequested = args.Length > 0 && (args[0] == "--version" || args[0] == "-v");
+
+        if (isHelpRequested || isVersionRequested)
+        {
+            var originalOut = Console.Out;
+            try
+            {
+                Console.SetOut(new ColoredTextWriter(originalOut));
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
         var roadIdsArgument = new Argument<string[]>("road-ids")
         {
             Arity = ArgumentArity.OneOrMore,
